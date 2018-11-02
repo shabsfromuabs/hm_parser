@@ -1,0 +1,18 @@
+.hm-floating-btn {
+  cursor: pointer;
+  background: #00cd0b;
+  color: #fff;
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  width: 220px;
+  padding: 10px;
+  font-weight: normal;
+  text-transform: uppercase;
+  border-radius: 2px;
+  font-size: 14px;
+}
+
+.hm-floating-btn:hover {
+  background: #00e215;
+}

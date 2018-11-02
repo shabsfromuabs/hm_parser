@@ -1,0 +1,27 @@
+<html>
+<head>
+  <title>Popup</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div class="wrapper">
+  <div class="container-fluid">
+    <button id='initialize' class="btn btn-success btn-block"></button>
+    <a class="btn btn-warning btn-block mb-4" href="https://app.hmbee.ru/app/changelog" target="_blank">
+      Open HoneyMoney
+    </a>
+
+    <form id="credentials-form">
+      <div class="form-group">
+        <input type="email" class="form-control form-control-sm mb-2" name="email" placeholder="Email">
+        <input type="password" class="form-control form-control-sm mb-2" name="password" placeholder="Password">
+        <button type="submit" class="btn btn-primary btn-block btn-sm">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
