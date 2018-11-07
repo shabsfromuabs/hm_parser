@@ -5,11 +5,16 @@ const ACCOUNTS = {
   walletArtem: 19403,
   walletNatali: 19404,
   cardAccount: 520859,
-  entrepreneurAccount: 509014
+  entrepreneurAccount: 509014,
+  visaDebitAccount: 509018
 };
-const WITHDRAW_OPERATION_REGEXP = /Отримання готівки в банкоматі/;
-const TOP_UP_OPERATION_REGEXP = 'Б/г зарахування з іншого рахунку Клієнта';
-const GENERAL_TRANSFER_REGEXP = /Переказ грошових коштів/;
+const OPERATION_MATCHERS = {
+  withdrawFromATM: 'Отримання готівки в банкоматі',
+  topUpFromEntrepreneurAccount: 'Б/г зарахування з іншого рахунку Клієнта',
+  // transferToAlfaCredit: 'Переказ грошових коштів на картковий рахунок через MasterCard\\Visa\\CARD2CARD UA ALFACC KIEV UKR',
+  transferToAlfaDebit: 'Переказ грошових коштів на картковий рахунок через MasterCard\\Visa',
+  generalTransfer: 'Переказ грошових коштів'
+};
 const CATEGORIES_BY_DESCRIPTION = [
   {
     category: 'Продукти',
@@ -54,19 +59,9 @@ const CATEGORIES_BY_DESCRIPTION = [
   }
 ];
 
-let saveBtn;
-let parseBtn;
-let startDate;
-let parsedTransactions;
 
-const saveParsedTransactions = () => {
-  console.log('SAVE', parsedTransactions);
-  chrome.storage.sync.set({ 'parsedTransactions': parsedTransactions });
-  console.log('SAVED');
-  chrome.storage.sync.get('parsedTransactions', (result) => {
-    console.log('PARSED TRS:', result.parsedTransactions);
-  });
-};
+
+// appendHtmlElement
 
 const appendHtmlElement = (name, target, props = {}, styles = {}) => {
   const element = document.createElement(name);
@@ -80,19 +75,9 @@ const appendHtmlElement = (name, target, props = {}, styles = {}) => {
   return element;
 };
 
-const addActionButtons = () => {
-  const props = { className: 'hm-floating-btn' };
-  saveBtn = appendHtmlElement('button', document.body,
-    Object.assign({}, props, { innerText: 'Save parsed transactions' }),
-    { bottom: '50px' }
-  );
-  parseBtn = appendHtmlElement('button', document.body,
-    Object.assign({}, props, { innerText: 'Parse transactions' }),
-    { bottom: '100px' }
-  );
-  saveBtn.onclick = saveParsedTransactions;
-  parseBtn.onclick = () => parsedTransactions = parse();
-};
+
+
+// Helpers
 
 const markRow = (row, color) => {
   row.style.boxShadow = `15px 0px 10px -10px inset ${color}`;
@@ -123,121 +108,159 @@ const markError = (row, text) => {
   appendHtmlElement('div', row, { innerText: text, className: 'hm-error' }, { display: 'table-row' });
 };
 
-function parse() {
-  const transactions = [];
-  const rows = document.querySelectorAll('.data .transactionItemPanel');
+class UkrsibParser {
+  constructor() {
+    this.saveBtn = null;
+    this.parseBtn = null;
+    this.startDate = null;
+    this.parsedTransactions = [];
 
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-    const transaction = {};
+    chrome.runtime.onMessage.addListener((request) => {
+      if (request.command === 'initialize') {
+        console.log(request.lastTransactions);
+        this.setStartDate(request.lastTransactions);
+        this.addActionButtons();
+      }
+    });
+  }
 
-    try {
-      const shouldIncludeCheckbox = row.querySelector('input.hm-checkbox');
-      const dateStr = row.querySelector('.cell.date .date').innerText;
-      const dayStr = dateStr.split('.')[0];
-      const monthStr = dateStr.split('.')[1];
-      const transactionDate = new Date(
-        new Date().getFullYear(),
-        parseInt(monthStr) - 1,
-        dayStr
-      );
-      // Convert to integer for further saving in chrome extension store
-      transaction.date = transactionDate.getTime();
+  setStartDate(lastTransactions) {
+    if (lastTransactions && lastTransactions.ukrsib) {
+      // start date will be passed as an integer through messages
+      this.startDate = new Date(lastTransactions.ukrsib);
+      // Increment date so parsing will start from the next day after last date
+      this.startDate.setDate(this.startDate.getDate() + 1);
+    }
+  }
 
-      // First of all pay attention on user selection (if present)
-      if (shouldIncludeCheckbox) {
-        if (!shouldIncludeCheckbox.checked) {
+  addActionButtons() {
+    const props = { className: 'hm-floating-btn' };
+    this.saveBtn = appendHtmlElement('button', document.body,
+      Object.assign({}, props, { innerText: 'Save parsed transactions' }),
+      { bottom: '50px' }
+    );
+    this.parseBtn = appendHtmlElement('button', document.body,
+      Object.assign({}, props, { innerText: 'Parse transactions' }),
+      { bottom: '100px' }
+    );
+    this.saveBtn.onclick = () => {
+      chrome.storage.sync.set({ 'parsedTransactions': this.parsedTransactions });
+    };
+    this.parseBtn.onclick = () => this.parsedTransactions = this.parse();
+  }
+
+  parse() {
+    const transactions = [];
+    const rows = document.querySelectorAll('.data .transactionItemPanel');
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const transaction = {};
+
+      try {
+        const shouldIncludeCheckbox = row.querySelector('input.hm-checkbox');
+        const dateStr = row.querySelector('.cell.date .date').innerText;
+        const dayStr = dateStr.split('.')[0];
+        const monthStr = dateStr.split('.')[1];
+        const transactionDate = new Date(
+          new Date().getFullYear(),
+          parseInt(monthStr) - 1,
+          dayStr
+        );
+        // Convert to integer for further saving in chrome extension store
+        transaction.date = transactionDate.getTime();
+
+        // First of all pay attention on user selection (if present)
+        if (shouldIncludeCheckbox) {
+          if (!shouldIncludeCheckbox.checked) {
+            markIgnored(row);
+            continue;
+          }
+        } else if (this.startDate && transactionDate < this.startDate) {
           markIgnored(row);
           continue;
         }
-      } else if (transactionDate < startDate) {
-        markIgnored(row);
-        continue;
-      }
 
-      let user;
-      const accountDesc = row.querySelector('.cell.description .tool').innerText;
-      const lastNumbersMatch = accountDesc.match(/\d{4}$/);
-      if (lastNumbersMatch) {
-        user = USERS[lastNumbersMatch[0]];
-      }
+        let user;
+        const accountDesc = row.querySelector('.cell.description .tool').innerText;
+        const lastNumbersMatch = accountDesc.match(/\d{4}$/);
+        if (lastNumbersMatch) {
+          user = USERS[lastNumbersMatch[0]];
+        }
 
-      const amountStr = row
-        .querySelector('.cell.amount .sum')
-        .innerText.replace(/\s/g, '')
-        .replace(',', '.');
-      transaction.amount = Math.abs(parseFloat(amountStr));
+        const amountStr = row
+          .querySelector('.cell.amount .sum')
+          .innerText.replace(/\s/g, '')
+          .replace(',', '.');
+        transaction.amount = Math.abs(parseFloat(amountStr));
 
-      const description = row
-        .querySelector('.cell.description .alias')
-        .innerText.replace(/\\/g, ' ')
-        .replace(/:віртуальною карткою \*\*\*\*\d+\./, '')
-        .replace('Оплата товарів послуг ', '');
+        const description = row
+          .querySelector('.cell.description .alias')
+          .innerText.replace(/\\/g, ' ')
+          .replace(/:віртуальною карткою \*\*\*\*\d+\./, '')
+          .replace('Оплата товарів послуг ', '');
 
-      if (description.match(WITHDRAW_OPERATION_REGEXP)) {
-        if (!user) {
-          markError(row, "Can't detect account where money were withdrawn");
+        if (description.match(OPERATION_MATCHERS.withdrawFromATM)) {
+          if (!user) {
+            markError(row, "Can't detect account where money were withdrawn");
+            continue;
+          }
+          transaction.accountInfo = {
+            fromId: ACCOUNTS.cardAccount,
+            toId: ACCOUNTS[`wallet${user}`]
+          };
+          transaction.type = 'transfer';
+          transaction.description = 'Зняття готівки в банкоматі';
+        } else if (description.match(OPERATION_MATCHERS.topUpFromEntrepreneurAccount)) {
+          transaction.accountInfo = {
+            fromId: ACCOUNTS.entrepreneurAccount,
+            toId: ACCOUNTS.visaDebitAccount
+          };
+          transaction.type = 'transfer';
+          transaction.description = 'Переказ на карту АльфаБанк Visa Депозитна';
+        } else if (description.match(OPERATION_MATCHERS.transferToAlfaDebit)) {
+          transaction.accountInfo = {
+            fromId: ACCOUNTS.cardAccount,
+            toId: ACCOUNTS.cardAccount
+          };
+          transaction.type = 'transfer';
+          transaction.description = 'Переказ коштів з раухку ФОП';
+        } else if (description.match(OPERATION_MATCHERS.topUpFromEntrepreneurAccount)) {
+          markError(row, "Unhandled money transfer");
           continue;
-        }
-        transaction.accountInfo = {
-          fromId: ACCOUNTS.cardAccount,
-          toId: ACCOUNTS[`wallet${user}`]
-        };
-        transaction.type = 'transfer';
-        transaction.description = 'Зняття готівки в банкоматі';
-      } else if (description.match(TOP_UP_OPERATION_REGEXP)) {
-        transaction.accountInfo = {
-          fromId: ACCOUNTS.entrepreneurAccount,
-          toId: ACCOUNTS.cardAccount
-        };
-        transaction.type = 'transfer';
-        transaction.description = 'Переказ коштів з раухку ФОП';
-      } else if (description.match(GENERAL_TRANSFER_REGEXP)) {
-        markError(row, "Unhandled money transfer");
-        continue;
-      } else {
-        transaction.accountInfo = ACCOUNTS.cardAccount;
-        transaction.type = 'expense';
-        // Expense should be negative number
-        transaction.amount = -1 * transaction.amount;
-        transaction.description = [user, description].join(': ');
-        // Trying to guess category
-        CATEGORIES_BY_DESCRIPTION.forEach((cat) => {
-          cat.keywords.forEach((keyword) => {
-            if (description.match(new RegExp(keyword, 'i'))) {
-              transaction.category = cat.category;
-            }
+        } else {
+          transaction.accountInfo = ACCOUNTS.cardAccount;
+          transaction.type = 'expense';
+          // Expense should be negative number
+          transaction.amount = -1 * transaction.amount;
+          transaction.description = [user, description].join(': ');
+          // Trying to guess category
+          CATEGORIES_BY_DESCRIPTION.forEach((cat) => {
+            cat.keywords.forEach((keyword) => {
+              if (description.match(new RegExp(keyword, 'i'))) {
+                transaction.category = cat.category;
+              }
+            });
           });
-        });
-        if (!transaction.category) {
-          // TODO: Add icon category to category matching
-          const icon = row.querySelector('.category .image');
-          icon.dispatchEvent(new Event('mouseover'));
-          const categoryTooltip = document.querySelector('.ui-tooltip-content');
-          icon.dispatchEvent(new Event('mouseout'));
-          transaction.category = '***' + categoryTooltip.innerText;
+          if (!transaction.category) {
+            // TODO: Add icon category to category matching
+            const icon = row.querySelector('.category .image');
+            icon.dispatchEvent(new Event('mouseover'));
+            const categoryTooltip = document.querySelector('.ui-tooltip-content');
+            icon.dispatchEvent(new Event('mouseout'));
+            transaction.category = '***' + categoryTooltip.innerText;
+          }
         }
-      }
 
-      transactions.push(transaction);
-      markSuccess(row);
-    } catch (e) {
-      console.warn(row.innerText, e);
+        transactions.push(transaction);
+        markSuccess(row);
+      } catch (e) {
+        console.warn(row.innerText, e);
+      }
     }
+    console.info(transactions);
+    return transactions;
   }
-  console.log(transactions);
-  return transactions;
 }
 
-chrome.runtime.onMessage.addListener((request) => {
-  if (request.command === 'initialize') {
-    console.log(request.lastTransactions);
-    if (request.lastTransactions && request.lastTransactions.ukrsib) {
-      // start date will be passed as an integer through messages
-      startDate = new Date(request.lastTransactions.ukrsib);
-      // Increment date so parsing will start from the next day after last date
-      startDate.setDate(startDate.getDate() + 1);
-    }
-    addActionButtons();
-  }
-});
+new UkrsibParser();
