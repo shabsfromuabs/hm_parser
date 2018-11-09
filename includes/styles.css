@@ -16,3 +16,17 @@
 .hm-floating-btn:hover {
   background: #00e215;
 }
+
+.hm-parsed-info {
+  display: flex;
+}
+
+.hm-parsed-info input.hm-description {
+  margin-right: 10px;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+
+.hm-parsed-info select.hm-category {
+  border: 1px solid #999;
+}

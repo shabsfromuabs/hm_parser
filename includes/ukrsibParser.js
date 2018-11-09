@@ -1,116 +1,69 @@
 // Last 4 digits of the card ro each user
-const USERS = { '5076': 'Artem', '9292': 'Natali', '8110': 'Artem' };
-// Account ids in Honey Money system
-const ACCOUNTS = {
-  walletArtem: 19403,
-  walletNatali: 19404,
-  cardAccount: 520859,
-  entrepreneurAccount: 509014,
-  visaDebitAccount: 509018
-};
+const USERS = { '5076': 'Артем', '9292': 'Наталі', '8110': 'Артем' };
+
 const OPERATION_MATCHERS = {
   withdrawFromATM: 'Отримання готівки в банкоматі',
   topUpFromEntrepreneurAccount: 'Б/г зарахування з іншого рахунку Клієнта',
-  // transferToAlfaCredit: 'Переказ грошових коштів на картковий рахунок через MasterCard\\Visa\\CARD2CARD UA ALFACC KIEV UKR',
-  transferToAlfaDebit: 'Переказ грошових коштів на картковий рахунок через MasterCard\\Visa',
+  // transferToAlfaCredit: 'Переказ грошових коштів на картковий рахунок через MasterCard Visa',
+  transferToAlfaDebit: 'Переказ грошових коштів на картковий рахунок через MasterCard Visa',
   generalTransfer: 'Переказ грошових коштів'
 };
-const CATEGORIES_BY_DESCRIPTION = [
-  {
-    category: 'Продукти',
-    keywords: [
-      'SHOP BILLA',
-      'UNIVERSAMSILPO',
-      'SILPO',
-      'LOTOK',
-      'Lomonos MAGAZINPRODUKT'
-    ]
-  },
-  {
-    category: 'Кафе і ресторани',
-    keywords: ['McDonald']
-  },
-  {
-    category: 'Транспорт / Таксі',
-    keywords: ['Uber BV']
-  },
-  {
-    category: 'Транспорт / Метро',
-    keywords: ['METROPOLITEN']
-  },
-  {
-    category: 'Одяг',
-    keywords: [
-      'RESERVED',
-      'MOHITO',
-      'CROPPTOWN',
-      'HOUSE',
-      'NEW YORKER',
-      'ZARA',
-      'BEFREE',
-      'OLKO',
-      'OGGI',
-      'STRADIVARIUS'
-    ]
-  },
-  {
-    category: 'Взуття',
-    keywords: ['INTERTOP']
-  }
-];
-
-
-
-// appendHtmlElement
-
-const appendHtmlElement = (name, target, props = {}, styles = {}) => {
-  const element = document.createElement(name);
-  Object.entries(props).forEach((prop) => {
-    element[prop[0]] = prop[1];
-  });
-  Object.entries(styles).forEach((style) => {
-    element.style[style[0]] = style[1];
-  });
-  target.appendChild(element);
-  return element;
-};
-
-
 
 // Helpers
 
 const markRow = (row, color) => {
   row.style.boxShadow = `15px 0px 10px -10px inset ${color}`;
+};
+
+const removeError = (row) => {
   const errorPane = row.querySelector('.hm-error');
   if (errorPane) errorPane.remove();
 };
 
-const addUiPane = (row, checked = false) => {
+const addUiPane = (row) => {
   const uiPane = row.querySelector('.hm-ui');
   if (!uiPane) {
-    const panel = appendHtmlElement('div', row, { className: 'hm-ui' }, { display: 'table-row' });
-    appendHtmlElement('input', panel, { type: 'checkbox', className: 'hm-checkbox', checked });
+    return appendHtmlElement('div', row, { className: 'hm-ui' }, { display: 'table-row' });
   }
+  return uiPane;
 };
 
-const markSuccess = (row) => {
+const addCheckbox = (uiPane, checked = false) => {
+  let wrapper = uiPane.querySelector('.hm-checkbox-wrap');
+  if (!wrapper) {
+    wrapper = appendHtmlElement('div', uiPane, { className: 'hm-checkbox-wrap' }, { display: 'table-cell' });
+    appendHtmlElement('input', wrapper, { type: 'checkbox', className: 'hm-should-parse', checked });
+  }
+  return wrapper;
+};
+
+const markSuccess = (row, transaction) => {
   markRow(row, '#00cd8e');
-  addUiPane(row, true);
+  removeError(row);
+  const uiPane = addUiPane(row);
+  addCheckbox(uiPane, true);
+  const { input, select } = appendParsedInfo(uiPane);
+  input.value = transaction.description;
+  select.value = transaction.category;
 };
 
 const markIgnored = (row) => {
   markRow(row, 'grey');
-  addUiPane(row, false);
+  removeError(row);
+  const uiPane = addUiPane(row);
+  addCheckbox(uiPane, false);
 };
 
 const markError = (row, text) => {
   markRow(row, 'red');
-  appendHtmlElement('div', row, { innerText: text, className: 'hm-error' }, { display: 'table-row' });
+  removeError(row);
+  const uiPane = addUiPane(row);
+  addCheckbox(uiPane, true);
+  appendHtmlElement('div', uiPane, { innerText: text, className: 'hm-error' }, { display: 'table-cell' });
 };
 
 class UkrsibParser {
   constructor() {
-    this.saveBtn = null;
     this.parseBtn = null;
     this.startDate = null;
     this.parsedTransactions = [];
@@ -134,18 +87,8 @@ class UkrsibParser {
   }
 
   addActionButtons() {
-    const props = { className: 'hm-floating-btn' };
-    this.saveBtn = appendHtmlElement('button', document.body,
-      Object.assign({}, props, { innerText: 'Save parsed transactions' }),
-      { bottom: '50px' }
-    );
-    this.parseBtn = appendHtmlElement('button', document.body,
-      Object.assign({}, props, { innerText: 'Parse transactions' }),
-      { bottom: '100px' }
-    );
-    this.saveBtn.onclick = () => {
-      chrome.storage.sync.set({ 'parsedTransactions': this.parsedTransactions });
-    };
+    const props = { className: 'hm-floating-btn', innerText: 'Parse Transactions' };
+    this.parseBtn = appendHtmlElement('button', document.body, props);
     this.parseBtn.onclick = () => this.parsedTransactions = this.parse();
   }
 
@@ -158,7 +101,9 @@ class UkrsibParser {
       const transaction = {};
 
       try {
-        const shouldIncludeCheckbox = row.querySelector('input.hm-checkbox');
+        const shouldParseCheckbox = row.querySelector('input.hm-should-parse');
+        const descriptionInput = row.querySelector('input.hm-description');
+        const categorySelect = row.querySelector('select.hm-category');
         const dateStr = row.querySelector('.cell.date .date').innerText;
         const dayStr = dateStr.split('.')[0];
         const monthStr = dateStr.split('.')[1];
@@ -171,8 +116,8 @@ class UkrsibParser {
         transaction.date = transactionDate.getTime();
 
         // First of all pay attention on user selection (if present)
-        if (shouldIncludeCheckbox) {
-          if (!shouldIncludeCheckbox.checked) {
+        if (shouldParseCheckbox) {
+          if (!shouldParseCheckbox.checked) {
             markIgnored(row);
             continue;
           }
@@ -192,7 +137,8 @@ class UkrsibParser {
           .querySelector('.cell.amount .sum')
           .innerText.replace(/\s/g, '')
           .replace(',', '.');
-        transaction.amount = Math.abs(parseFloat(amountStr));
+        // NOTE: Expense should be negative numbers in HM
+        transaction.amount = parseFloat(amountStr);
 
         const description = row
           .querySelector('.cell.description .alias')
@@ -206,59 +152,59 @@ class UkrsibParser {
             continue;
           }
           transaction.accountInfo = {
-            fromId: ACCOUNTS.cardAccount,
-            toId: ACCOUNTS[`wallet${user}`]
+            fromId: getAccountByName('MC Укрсиб [Elite]').id,
+            toId: getAccountByName(`Гаманець [${user}]`).id
           };
+          transaction.amount = Math.abs(transaction.amount);
           transaction.type = 'transfer';
           transaction.description = 'Зняття готівки в банкоматі';
         } else if (description.match(OPERATION_MATCHERS.topUpFromEntrepreneurAccount)) {
           transaction.accountInfo = {
-            fromId: ACCOUNTS.entrepreneurAccount,
-            toId: ACCOUNTS.visaDebitAccount
+            fromId: getAccountByName('ФОП Укрсиб UAH').id,
+            toId: getAccountByName('MC Укрсиб [Elite]').id
           };
-          transaction.type = 'transfer';
-          transaction.description = 'Переказ на карту АльфаБанк Visa Депозитна';
-        } else if (description.match(OPERATION_MATCHERS.transferToAlfaDebit)) {
-          transaction.accountInfo = {
-            fromId: ACCOUNTS.cardAccount,
-            toId: ACCOUNTS.cardAccount
-          };
+          transaction.amount = Math.abs(transaction.amount);
           transaction.type = 'transfer';
           transaction.description = 'Переказ коштів з раухку ФОП';
-        } else if (description.match(OPERATION_MATCHERS.topUpFromEntrepreneurAccount)) {
+        } else if (description.match(OPERATION_MATCHERS.transferToAlfaDebit)) {
+          transaction.accountInfo = {
+            fromId: getAccountByName('MC Укрсиб [Elite]').id,
+            toId: getAccountByName('Visa Альфа Депозитна [Артем]').id
+          };
+          transaction.amount = Math.abs(transaction.amount);
+          transaction.type = 'transfer';
+          transaction.description = 'Переказ на карту АльфаБанк Visa Депозитна';
+        } else if (description.match(OPERATION_MATCHERS.generalTransfer)) {
           markError(row, "Unhandled money transfer");
           continue;
         } else {
-          transaction.accountInfo = ACCOUNTS.cardAccount;
-          transaction.type = 'expense';
-          // Expense should be negative number
-          transaction.amount = -1 * transaction.amount;
-          transaction.description = [user, description].join(': ');
-          // Trying to guess category
-          CATEGORIES_BY_DESCRIPTION.forEach((cat) => {
-            cat.keywords.forEach((keyword) => {
-              if (description.match(new RegExp(keyword, 'i'))) {
-                transaction.category = cat.category;
-              }
-            });
-          });
+          transaction.accountInfo = getAccountByName('MC Укрсиб [Elite]').id;
+          transaction.type = transaction.amount < 0 ? 'expense' : 'income';
+          // First of all pay attention to description input (if present)
+          transaction.description = descriptionInput ?
+            descriptionInput.value :
+            [user, description].join(': ');
+          // First of all pay attention to category select (if present)
+          transaction.category = categorySelect ?
+            categorySelect.value :
+            guessCategoryByDescription(description);
           if (!transaction.category) {
-            // TODO: Add icon category to category matching
             const icon = row.querySelector('.category .image');
             icon.dispatchEvent(new Event('mouseover'));
             const categoryTooltip = document.querySelector('.ui-tooltip-content');
             icon.dispatchEvent(new Event('mouseout'));
-            transaction.category = '***' + categoryTooltip.innerText;
+            transaction.category = guessCategoryByUkrsibCategory(categoryTooltip.innerText);
           }
         }
 
         transactions.push(transaction);
-        markSuccess(row);
+        markSuccess(row, transaction);
       } catch (e) {
         console.warn(row.innerText, e);
       }
     }
     console.info(transactions);
+    chrome.storage.sync.set({ 'parsedTransactions': transactions });
     return transactions;
   }
 }

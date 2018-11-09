@@ -31,16 +31,18 @@ class Popup {
 
   // Add proper content script to currently open page
   addContentScripts() {
-    console.log('ADDsript');
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const currentTab = tabs[0];
       if (currentTab.url && currentTab.url.startsWith('https://online.ukrsibbank.com/ibank')) {
+        chrome.tabs.executeScript(currentTab.id, { file: 'shared/data.js' });
+        chrome.tabs.executeScript(currentTab.id, { file: 'shared/helpers.js' });
         chrome.tabs.executeScript(currentTab.id, { file: 'includes/ukrsibParser.js' });
         this.initializeButton.innerText = 'Initialize parser';
       } else if (currentTab.url && currentTab.url.startsWith('https://app.hmbee.ru/app')) {
+        chrome.tabs.executeScript(currentTab.id, { file: 'shared/data.js' });
+        chrome.tabs.executeScript(currentTab.id, { file: 'shared/helpers.js' });
         chrome.tabs.executeScript(tabs[0].id, { file: 'includes/hm.js' });
         this.initializeButton.innerText = 'Initialize uploader';
-        console.log('ADDEDsript');
       }
       // Add styling
       chrome.tabs.insertCSS(tabs[0].id, { file: 'includes/styles.css' });
