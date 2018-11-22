@@ -17,7 +17,9 @@ const markRow = (row, color) => {
 
 const removeError = (row) => {
   const errorPane = row.querySelector('.hm-error');
+  const warningPane = row.querySelector('.hm-warning');
   if (errorPane) errorPane.remove();
+  if (warningPane) warningPane.remove();
 };
 
 const addUiPane = (row) => {
@@ -54,12 +56,28 @@ const markIgnored = (row) => {
   addCheckbox(uiPane, false);
 };
 
+const markWarning = (row, text) => {
+  markRow(row, '#eace2e');
+  removeError(row);
+  const uiPane = addUiPane(row);
+  addCheckbox(uiPane, true);
+  appendHtmlElement('div', uiPane, { innerText: text, className: 'hm-warning' }, { display: 'table-cell' });
+};
+
 const markError = (row, text) => {
   markRow(row, 'red');
   removeError(row);
   const uiPane = addUiPane(row);
   addCheckbox(uiPane, true);
   appendHtmlElement('div', uiPane, { innerText: text, className: 'hm-error' }, { display: 'table-cell' });
+};
+
+const getUkrsibCategory = (row) => {
+  const icon = row.querySelector('.category .image');
+  icon.dispatchEvent(new Event('mouseover'));
+  const categoryTooltip = document.querySelector('.ui-tooltip-content');
+  icon.dispatchEvent(new Event('mouseout'));
+  return categoryTooltip.innerText;
 };
 
 class UkrsibParser {
@@ -166,35 +184,36 @@ class UkrsibParser {
           transaction.amount = Math.abs(transaction.amount);
           transaction.type = 'transfer';
           transaction.description = 'Переказ коштів з раухку ФОП';
-        } else if (description.match(OPERATION_MATCHERS.transferToAlfaDebit)) {
-          transaction.accountInfo = {
-            fromId: getAccountByName('MC Укрсиб [Elite]').id,
-            toId: getAccountByName('Visa Альфа Депозитна [Артем]').id
-          };
-          transaction.amount = Math.abs(transaction.amount);
-          transaction.type = 'transfer';
-          transaction.description = 'Переказ на карту АльфаБанк Visa Депозитна';
+        // } else if (description.match(OPERATION_MATCHERS.transferToAlfaDebit)) {
+        //   transaction.accountInfo = {
+        //     fromId: getAccountByName('MC Укрсиб [Elite]').id,
+        //     toId: getAccountByName('Visa Альфа Депозитна [Артем]').id
+        //   };
+        //   transaction.amount = Math.abs(transaction.amount);
+        //   transaction.type = 'transfer';
+        //   transaction.description = 'Переказ на карту АльфаБанк Visa Депозитна';
         } else if (description.match(OPERATION_MATCHERS.generalTransfer)) {
-          markError(row, "Unhandled money transfer");
+          markWarning(row, "Unhandled money transfer");
           continue;
         } else {
           transaction.accountInfo = getAccountByName('MC Укрсиб [Elite]').id;
           transaction.type = transaction.amount < 0 ? 'expense' : 'income';
+          const { description: descriptionGuess, category: categoryGuess } = guessTransactionDetails({
+            description,
+            ukrsibCategory: getUkrsibCategory(row)
+          });
           // First of all pay attention to description input (if present)
-          transaction.description = descriptionInput ?
-            descriptionInput.value :
-            [user, description].join(': ');
-          // First of all pay attention to category select (if present)
-          transaction.category = categorySelect ?
-            categorySelect.value :
-            guessCategoryByDescription(description);
-          if (!transaction.category) {
-            const icon = row.querySelector('.category .image');
-            icon.dispatchEvent(new Event('mouseover'));
-            const categoryTooltip = document.querySelector('.ui-tooltip-content');
-            icon.dispatchEvent(new Event('mouseout'));
-            transaction.category = guessCategoryByUkrsibCategory(categoryTooltip.innerText);
+          if (descriptionInput) {
+            transaction.description = descriptionInput.value
+          } else {
+            transaction.description = [
+              Math.abs(transaction.amount),
+              user && `[${user}]`,
+              (descriptionGuess || description)
+            ].join(' ');
           }
+          // First of all pay attention to category select (if present)
+          transaction.category = categorySelect ? categorySelect.value : categoryGuess;
         }
 
         transactions.push(transaction);

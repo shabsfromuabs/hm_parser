@@ -33,14 +33,14 @@ class Popup {
   addContentScripts() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const currentTab = tabs[0];
+      chrome.tabs.executeScript(currentTab.id, { file: 'shared/accounts.js' });
+      chrome.tabs.executeScript(currentTab.id, { file: 'shared/categories.js' });
+      chrome.tabs.executeScript(currentTab.id, { file: 'shared/helpers.js' });
+
       if (currentTab.url && currentTab.url.startsWith('https://online.ukrsibbank.com/ibank')) {
-        chrome.tabs.executeScript(currentTab.id, { file: 'shared/data.js' });
-        chrome.tabs.executeScript(currentTab.id, { file: 'shared/helpers.js' });
         chrome.tabs.executeScript(currentTab.id, { file: 'includes/ukrsibParser.js' });
         this.initializeButton.innerText = 'Initialize parser';
       } else if (currentTab.url && currentTab.url.startsWith('https://app.hmbee.ru/app')) {
-        chrome.tabs.executeScript(currentTab.id, { file: 'shared/data.js' });
-        chrome.tabs.executeScript(currentTab.id, { file: 'shared/helpers.js' });
         chrome.tabs.executeScript(tabs[0].id, { file: 'includes/hm.js' });
         this.initializeButton.innerText = 'Initialize uploader';
       }
