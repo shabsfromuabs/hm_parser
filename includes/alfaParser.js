@@ -1,21 +1,16 @@
-// Last 4 digits of the card ro each user
-const USERS = { '5076': 'Артем', '9292': 'Наталі', '8110': 'Наталі' };
+const detectCurrentAccount = (cardName) => {
+  if (cardName.match(/Кредитна карта World/i)) return getAccountByName('MC Альфа Кредитна [Артем]');
+  else if (cardName.match(/Пакет Ультра/i)) return getAccountByName('Visa Альфа Депозитна [Артем]');
+  else if (cardName.match(/Зарплатна карта/i)) return getAccountByName('Visa Альфа [Наталі]');
+};
 
 const TRANSFER_OPERATION_MATCHERS = {
-  withdrawFromATM: 'Отримання готівки в банкоматі',
-  topUpFromEntrepreneurAccount: 'Б/г зарахування з іншого рахунку Клієнта',
-  generalTransfer: 'Переказ грошових коштів'
+  withdrawFromATM: 'Зняття готівки в банкоматі',
+  transferFromUkrsib: 'Зачисление перевода MoneySend',
+  ignoreTransfer: '(Дохідний|Доходного) сейф'
 };
 
-const getUkrsibCategory = (row) => {
-  const icon = row.querySelector('.category .image');
-  icon.dispatchEvent(new Event('mouseover'));
-  const categoryTooltip = document.querySelector('.ui-tooltip-content');
-  icon.dispatchEvent(new Event('mouseout'));
-  return categoryTooltip.innerText;
-};
-
-class UkrsibParser {
+class AlfaParser {
   constructor() {
     this.parseBtn = null;
     this.startDate = null;
@@ -31,9 +26,9 @@ class UkrsibParser {
   }
 
   setStartDate(lastTransactions) {
-    if (lastTransactions && lastTransactions.ukrsib) {
+    if (lastTransactions && lastTransactions.alfa) {
       // start date will be passed as an integer through messages
-      this.startDate = new Date(lastTransactions.ukrsib);
+      this.startDate = new Date(lastTransactions.alfa);
       // Increment date so parsing will start from the next day after last date
       this.startDate.setDate(this.startDate.getDate() + 1);
     }
@@ -47,7 +42,13 @@ class UkrsibParser {
 
   parse() {
     const transactions = [];
-    const rows = document.querySelectorAll('.data .transactionItemPanel');
+    const rows = document.querySelectorAll('table.x-acct-operations tbody tr');
+    const cardName = document.getElementById('defaultSettingsId_productName').innerText;
+    const currentAccount = detectCurrentAccount(cardName);
+    if (!currentAccount) {
+      console.warn("Can't detect account");
+      return [];
+    }
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
@@ -58,7 +59,7 @@ class UkrsibParser {
         const descriptionInput = row.querySelector('input.hm-description');
         const categorySelect = row.querySelector('select.hm-category');
 
-        const dateStr = row.querySelector('.cell.date .date').innerText;
+        const dateStr = row.querySelector('td.column-1').innerText;
         const [dayStr, monthStr, yearStr] = dateStr.split('.');
         const transactionDate = new Date(yearStr, parseInt(monthStr) - 1, dayStr);
         // Convert to integer for further saving in chrome extension store
@@ -75,63 +76,52 @@ class UkrsibParser {
           continue;
         }
 
-        let user;
-        const accountDesc = row.querySelector('.cell.description .tool').innerText;
-        const lastNumbersMatch = accountDesc.match(/\d{4}$/);
-        if (lastNumbersMatch) {
-          user = USERS[lastNumbersMatch[0]];
-        }
-
-        const amountStr = row
-          .querySelector('.cell.amount .sum')
-          .innerText.replace(/\s/g, '')
+        const amountStr = row.querySelector('td.column-4').innerText
+          .replace(/\s/g, '')
           .replace(',', '.');
         // NOTE: Expense should be negative numbers in HM
         transaction.amount = parseFloat(amountStr);
 
-        const description = row
-          .querySelector('.cell.description .alias')
-          .innerText.replace(/\\/g, ' ')
-          .replace(/:віртуальною карткою \*\*\*\*\d+\./, '')
-          .replace('Оплата товарів послуг ', '');
+        const description = row.querySelector('td.column-3').innerText
+          .replace('(', ' ')
+          .replace(')', ' ')
+          .replace('Покупка ', '')
+          .replace('POS Purchase - ', '');
 
         if (description.match(TRANSFER_OPERATION_MATCHERS.withdrawFromATM)) {
-          if (!user) {
+          const userNameMatch = currentAccount.name.match(/(Артем|Наталі)/);
+          if (!userNameMatch) {
             markError(row, "Can't detect account where money were withdrawn");
             continue;
           }
           transaction.accountInfo = {
-            fromId: getAccountByName('MC Укрсиб [Elite]').id,
-            toId: getAccountByName(`Гаманець [${user}]`).id
+            fromId: currentAccount.id,
+            toId: getAccountByName(`Гаманець [${userNameMatch[1]}]`).id
           };
           transaction.amount = Math.abs(transaction.amount);
           transaction.type = 'transfer';
           transaction.description = 'Зняття готівки в банкоматі';
-        } else if (description.match(TRANSFER_OPERATION_MATCHERS.topUpFromEntrepreneurAccount)) {
+        } else if (description.match(TRANSFER_OPERATION_MATCHERS.transferFromUkrsib)) {
           transaction.accountInfo = {
-            fromId: getAccountByName('ФОП Укрсиб UAH').id,
-            toId: getAccountByName('MC Укрсиб [Elite]').id
+            fromId: getAccountByName('MC Укрсиб [Elite]').id,
+            toId: currentAccount.id
           };
           transaction.amount = Math.abs(transaction.amount);
           transaction.type = 'transfer';
-          transaction.description = 'Переказ коштів з раухку ФОП';
-        } else if (description.match(TRANSFER_OPERATION_MATCHERS.generalTransfer)) {
-          markWarning(row, 'Unhandled money transfer');
+          transaction.description = 'Поповнення з карти Укрсибу';
+        } else if (description.match(TRANSFER_OPERATION_MATCHERS.ignoreTransfer)) {
+          markWarning(row, 'Переказ з/на дохідний сейф');
           continue;
         } else {
-          transaction.accountInfo = getAccountByName('MC Укрсиб [Elite]').id;
+          transaction.accountInfo = currentAccount.id;
           transaction.type = transaction.amount < 0 ? 'expense' : 'income';
-          const { description: descriptionGuess, category: categoryGuess } = guessTransactionDetails({
-            description,
-            ukrsibCategory: getUkrsibCategory(row)
-          });
+          const { description: descriptionGuess, category: categoryGuess } = guessTransactionDetails({ description });
           // First of all pay attention to description input (if present)
           if (descriptionInput) {
             transaction.description = descriptionInput.value
           } else {
             transaction.description = [
               Math.abs(transaction.amount),
-              user && `[${user}]`,
               (descriptionGuess || description)
             ].join(' ');
           }
@@ -151,4 +141,4 @@ class UkrsibParser {
   }
 }
 
-new UkrsibParser();
+new AlfaParser();

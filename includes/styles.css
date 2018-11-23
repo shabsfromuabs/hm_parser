@@ -30,3 +30,13 @@
 .hm-parsed-info select.hm-category {
   border: 1px solid #999;
 }
+
+/* Alfa Overrides */
+.x-acct-operations tr {
+  display: block;
+  border-bottom: 1px solid #999;
+}
+
+.mab .grid .odd .grid-cell {
+  background: none !important;
+}

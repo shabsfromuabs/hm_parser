@@ -38,7 +38,12 @@ class Popup {
       chrome.tabs.executeScript(currentTab.id, { file: 'shared/helpers.js' });
 
       if (currentTab.url && currentTab.url.startsWith('https://online.ukrsibbank.com/ibank')) {
+        chrome.tabs.executeScript(currentTab.id, { file: 'includes/parserHelpers.js' });
         chrome.tabs.executeScript(currentTab.id, { file: 'includes/ukrsibParser.js' });
+        this.initializeButton.innerText = 'Initialize parser';
+      } else if (currentTab.url && currentTab.url.startsWith('https://my.alfabank.com.ua')) {
+        chrome.tabs.executeScript(currentTab.id, { file: 'includes/parserHelpers.js' });
+        chrome.tabs.executeScript(currentTab.id, { file: 'includes/alfaParser.js' });
         this.initializeButton.innerText = 'Initialize parser';
       } else if (currentTab.url && currentTab.url.startsWith('https://app.hmbee.ru/app')) {
         chrome.tabs.executeScript(tabs[0].id, { file: 'includes/hm.js' });

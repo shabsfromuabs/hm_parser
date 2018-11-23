@@ -9,24 +9,3 @@ const appendHtmlElement = (name, target, props = {}, styles = {}) => {
   target.appendChild(element);
   return element;
 };
-
-const appendParsedInfo = (container) => {
-  let input;
-  let select;
-  let parsedInfoWrap = container.querySelector('.hm-parsed-info');
-
-  if (!parsedInfoWrap) {
-    parsedInfoWrap = appendHtmlElement('div', container, { className: 'hm-parsed-info' }, { display: 'table-cell' });
-    input = appendHtmlElement('input', parsedInfoWrap, { type: 'text', className: 'hm-description' });
-    select = appendHtmlElement('select', parsedInfoWrap, { className: 'hm-category' });
-    appendHtmlElement('option', select, { innerText: '' });
-    getCategories().map((cat) => {
-      appendHtmlElement('option', select, { innerText: cat });
-    });
-  } else {
-    input = parsedInfoWrap.querySelector('.hm-description');
-    select = parsedInfoWrap.querySelector('.hm-category');
-  }
-
-  return { input, select };
-};

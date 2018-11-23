@@ -2,7 +2,6 @@ const CATEGORIES = [
   "Їжа / Магазини", "Їжа / Кафе",
   "Благодійність",
   "Велосипед / Аксесуари", // "Велосипед / Покупка",
-  "Зарплата",
   "Зв'язок / Мобільний", "Зв'язок / Інтернет",
   "Здоров'я / Лікарі", "Здоров'я / Ліки", "Здоров'я / Страховка", "Здоров'я / Інше",
   "Квартира / Оренда", "Квартира / Комуналка", "Квартира / Ремонт",
@@ -25,21 +24,39 @@ const CATEGORIES = [
   "Техніка / Електроніка", "Техніка / Побутова", "Техніка / Обсллуговування", "Техніка / Ремонт",
   "ФОП / Консалтинг", "ФОП / Податки", "ФОП / Суборенда",
   "Цифрові продукти / Музика", "Цифрові продукти / ПЗ",
-  "Інвестиції"
+  "Доходи / Інвестиції", "Доходи / Кешбек",
+  "Зарплата"
 ];
 
 const CATEGORIES_DESCRIPTION_MATCHES = [
   {
-    keywords: ['BILLA', 'SILPO', 'LOTOK'],
-    details: (keyword) => ({ category: 'Їжа / Магазини', description: `Продуктии в ${keyword}` })
+    keywords: ['KYIVSKYI METRO'],
+    details: { category: "Проїзд / Громадський траспорт", description: 'Метро' }
+  },
+  {
+    keywords: ['BILLA', 'SILPO', 'LOTOK', 'VELMART', 'AUCHAN', 'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket'],
+    details: (keyword) => {
+      const shopNames = {
+        'BILLA': 'Billa',
+        'SILPO': 'Сільпо',
+        'LOTOK': 'Лоток',
+        'VELMART': 'Велмарт',
+        'AUCHAN': 'Ашан',
+        'SHOP ATB': 'АТБ',
+        'SUPERMARKETEKO': 'Еко маркет',
+        'METRO': 'Metro',
+        'SamMarket': 'Сам маркет',
+      };
+      return { category: 'Їжа / Магазини', description: `Продуктии в "${shopNames[keyword]}"` };
+    }
   },
   {
     keywords: ['NOVUS', 'LOMONOS MAGAZIN PRODUK', 'LOMONOS PRODUKTOVIY'],
-    details: { category: 'Їжа / Магазини', description: `Продуктии в Novus` }
+    details: { category: 'Їжа / Магазини', description: 'Продуктии в "Novus"' }
   },
   {
-    keywords: ['SHOP ATB'],
-    details: { category: 'Їжа / Магазини', description: `Продуктии в АТБ` }
+    keywords: ['RPRODUKTOVIYMAGAZIN', 'MAGAZINMARKET'],
+    details: { category: "Їжа / Магазини", description: 'Продуктии в магазині' }
   },
   {
     keywords: ['McDonald'],
@@ -50,27 +67,63 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: 'Їжа / Кафе', description: 'Обід на роботі в бізнес центрі' }
   },
   {
-    keywords: ['Uber BV'],
+    keywords: ['EVRASIYA'],
+    details: { category: 'Розваги / Кафе ресторани клуби', description: 'Вечеря в Євразії' }
+  },
+  {
+    keywords: ['EPITSENTR'],
+    details: { category: 'Побут / Побутова хімія і гігієна', description: 'Покупки в Епіцентрі' }
+  },
+  {
+    keywords: ['Uber BV', 'UBERTRIP'],
     details: { category: 'Проїзд / Таксі', description: 'Таксі Uber' }
+  },
+  {
+    keywords: ['TAXIFY'],
+    details: { category: 'Проїзд / Таксі', description: 'Таксі TAXIFY' }
+  },
+  {
+    keywords: ['WFPTAXI'],
+    details: { category: 'Проїзд / Таксі', description: 'Таксі Uklon' }
   },
   {
     keywords: ['BOOKINGUZGOV', 'UZ.GOV.UA'],
     details: { category: 'Подорожі / Переїзд', description: 'Квитки на потяг' }
   },
   {
-    keywords: ['RESERVED', 'MOHITO', 'CROPPTOWN', 'HOUSE', 'NEW YORKER', 'ZARA', 'BEFREE', 'OLKO', 'OGGI', 'STRADIVARIUS'],
-    details: (keyword) => ({ category: 'Одяг / Одяг', description: `Одяг в ${keyword}` })
+    keywords: ['RESERVED', 'MOHITO', 'CROPPTOWN', 'CROPP TOWN', 'HOUSE', 'NEW YORKER', 'ZARA', 'BEFREE', 'OLKO', 'OGGI', 'STRADIVARIUS'],
+    details: (keyword) => ({ category: 'Одяг / Одяг', description: `Одяг в "${keyword}"` })
   },
   {
     keywords: ['INTERTOP'],
-    details: (keyword) => ({ category: 'Одяг / Взуття', description: `Взятту в ${keyword}` })
+    details: (keyword) => ({ category: 'Одяг / Взуття', description: `Взятту в "${keyword}"` })
+  },
+  {
+    keywords: ['SALONKRASY'],
+    details: { category: 'Краса / Послуги', description: 'Стрижка' }
+  },
+  {
+    keywords: ['Утримання податку'],
+    details: { category: 'Послуги / Державні', description: 'Податок на доходи' }
+  },
+  {
+    keywords: ['ЗАРАХУВАННЯ З/П', 'ЗАРАХ.З/П'],
+    details: { category: 'Зарплата', description: 'Зарплата' }
+  },
+  {
+    keywords: ['Виплата нарах. відсотків'],
+    details: { category: 'Доходи / Інвестиції', description: 'Проценти за накопичувальним рахунком' }
+  },
+  {
+    keywords: ['винагороди в рамках акції Cash back'],
+    details: { category: 'Доходи / Кешбек', description: 'Кешбек за кредиткою' }
   }
 ];
 
 const UKRSIB_CATEGORY_MATCHES = [
   {
     ukrsibCategory: 'Продуктові магазини',
-    details: { category: "Їжа / Магазини", description: `Продуктии в магазині` },
+    details: { category: "Їжа / Магазини", description: 'Продуктии в магазині' },
   },
   {
     ukrsibCategory: 'Метро',
@@ -106,7 +159,7 @@ const UKRSIB_CATEGORY_MATCHES = [
   },
   {
     ukrsibCategory: 'Проценти за депозитом',
-    details: { category: 'Інвестиції', description: 'Проценти за накопичувальним рахунком' }
+    details: { category: 'Доходи / Інвестиції', description: 'Проценти за накопичувальним рахунком' }
   }
 ];
 
