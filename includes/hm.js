@@ -96,20 +96,25 @@ const getToken = (email, password) =>
 function exportTransactions() {
   chrome.storage.sync.get('parsedTransactions', (result) => {
     console.log('parsedTransactions', result.parsedTransactions);
-    result.parsedTransactions.forEach((tr) => {
-      console.log('TR:', tr);
-      createTransaction(token, tr.type, new Date(tr.date), tr.amount, tr.accountInfo, tr.description, tr.category)
-        .then(() => {
-          // Remember last transaction's date
-          chrome.storage.sync.set({ 'lastTransactions': { ukrsib: new Date(tr.date).getTime() } });
-          // TODO: Display success
-        })
-        .catch((e) => {
-          console.warn(e);
-          // TODO: Display error
-        });
-    });
+    exportTransaction(result.parsedTransactions, 0);
   });
+}
+
+function exportTransaction(transactions, i) {
+  const tr = transactions[i];
+  if (!tr) return null;
+  return createTransaction(token, tr.type, new Date(tr.date), tr.amount, tr.accountInfo, tr.description, tr.category)
+    .then(() => {
+      // Remember last transaction's date
+      chrome.storage.sync.set({ 'lastTransaction': new Date(tr.date).getTime() });
+      // TODO: Display success
+      return exportTransaction(transactions, i + 1);
+    })
+    .catch((e) => {
+      console.warn(e);
+      // TODO: Display error
+      return exportTransaction(transactions, i + 1);
+    });
 }
 
 chrome.runtime.onMessage.addListener((request) => {

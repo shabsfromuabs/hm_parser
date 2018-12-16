@@ -2,20 +2,17 @@ class Popup {
   constructor() {
     this.initializeButton = document.querySelector('#initialize');
     this.credentialsForm = document.querySelector('#credentials-form');
-    this.lastTransactions = {};
-    this.loadLastTransactions();
+    this.loadLastTransaction();
     this.loadCredentials();
     this.addContentScripts();
     this.addEventListeners();
   }
 
-  // lastTransactions is a object with dates of last transactions saved to HM like:
-  // { ukrsib: 12345667, alfa: 823423412 }
-  // Where key is a banking alias, and value is a date of last transaction added (date.getTime())
-  loadLastTransactions() {
-    chrome.storage.sync.get('lastTransactions', (result) => {
-      console.log('lastTransactions loaded', result.lastTransactions);
-      this.lastTransactions = result.lastTransactions;
+  // lastTransaction is a int representation of date of last transaction saved to HM like: 823423412 (date.getTime())
+  loadLastTransaction() {
+    chrome.storage.sync.get('lastTransaction', (result) => {
+      console.log('lastTransaction loaded', result.lastTransaction);
+      this.lastTransaction = result.lastTransaction;
     });
   }
 
@@ -58,7 +55,7 @@ class Popup {
     // Send "initialize" command to content script on page
     this.initializeButton.addEventListener('click', () => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, { command: 'initialize', lastTransactions: this.lastTransactions });
+        chrome.tabs.sendMessage(tabs[0].id, { command: 'initialize', lastTransaction: this.lastTransaction });
       });
     });
 

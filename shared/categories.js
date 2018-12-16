@@ -79,7 +79,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: 'Проїзд / Таксі', description: 'Таксі Uber' }
   },
   {
-    keywords: ['TAXIFY'],
+    keywords: ['TAXIFY', 'TXFY.ME'],
     details: { category: 'Проїзд / Таксі', description: 'Таксі TAXIFY' }
   },
   {

@@ -23,17 +23,17 @@ class UkrsibParser {
 
     chrome.runtime.onMessage.addListener((request) => {
       if (request.command === 'initialize') {
-        console.log(request.lastTransactions);
-        this.setStartDate(request.lastTransactions);
+        console.log(request.lastTransaction);
+        this.setStartDate(request.lastTransaction);
         this.addActionButtons();
       }
     });
   }
 
-  setStartDate(lastTransactions) {
-    if (lastTransactions && lastTransactions.ukrsib) {
+  setStartDate(lastTransaction) {
+    if (lastTransaction) {
       // start date will be passed as an integer through messages
-      this.startDate = new Date(lastTransactions.ukrsib);
+      this.startDate = new Date(lastTransaction);
       // Increment date so parsing will start from the next day after last date
       this.startDate.setDate(this.startDate.getDate() + 1);
     }
