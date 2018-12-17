@@ -9,3 +9,13 @@ const appendHtmlElement = (name, target, props = {}, styles = {}) => {
   target.appendChild(element);
   return element;
 };
+
+const sortBy = (obj, key) => {
+  return obj.sort((a, b) => {
+    if(a[key] < b[key]) return -1;
+    if(a[key] > b[key]) return 1;
+    return 0;
+  });
+};
+
+const capitalize = (str) => str.substring(0, 1).toUpperCase() + str.substring(1);

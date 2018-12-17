@@ -1,7 +1,8 @@
 const detectCurrentAccount = (cardName) => {
-  if (cardName.match(/Кредитна карта World/i)) return getAccountByName('MC Альфа Кредитна [Артем]');
-  else if (cardName.match(/Пакет Ультра/i)) return getAccountByName('Visa Альфа Депозитна [Артем]');
-  else if (cardName.match(/Зарплатна карта/i)) return getAccountByName('Visa Альфа [Наталі]');
+  if (cardName.match(/Пакет Ультра/i)) return getAccountByName('Карта Альфа Debit [Артем]');
+  else if (cardName.match(/Кредитна карта World/i)) return getAccountByName('Карта Альфа Credit [Артем]');
+  else if (cardName.match(/Альфа Travel/i)) return getAccountByName('Карта Альфа Travel [Артем]');
+  else if (cardName.match(/Зарплатна карта/i)) return getAccountByName('Карта Альфа [Наталі]');
 };
 
 const TRANSFER_OPERATION_MATCHERS = {
@@ -18,20 +19,25 @@ class AlfaParser {
 
     chrome.runtime.onMessage.addListener((request) => {
       if (request.command === 'initialize') {
-        console.log(request.lastTransaction);
-        this.setStartDate(request.lastTransaction);
+        console.log('init parser. lastTransactionsDates:', request.lastTransactionsDates);
+        this.setStartDate(request.lastTransactionsDates);
         this.addActionButtons();
       }
     });
   }
 
-  setStartDate(lastTransaction) {
-    if (lastTransaction) {
-      // start date will be passed as an integer through messages
-      this.startDate = new Date(lastTransaction);
-      // Increment date so parsing will start from the next day after last date
-      this.startDate.setDate(this.startDate.getDate() + 1);
-    }
+  setStartDate() {
+    // lastAlfaTransaction is an integer representation of a date when last transaction was exported to HM, like: 823423412
+    chrome.storage.sync.get('lastAlfaTransaction', (result) => {
+      console.log('lastAlfaTransaction loaded', result.lastAlfaTransaction);
+
+      if (result.lastAlfaTransaction) {
+        // start date will be passed as an integer through messages
+        this.startDate = new Date(result.lastAlfaTransaction);
+        // Increment date so parsing will start from the next day after last date
+        this.startDate.setDate(this.startDate.getDate() + 1);
+      }
+    });
   }
 
   addActionButtons() {
@@ -103,7 +109,7 @@ class AlfaParser {
           transaction.description = 'Зняття готівки в банкоматі';
         } else if (description.match(TRANSFER_OPERATION_MATCHERS.transferFromUkrsib)) {
           transaction.accountInfo = {
-            fromId: getAccountByName('MC Укрсиб [Elite]').id,
+            fromId: getAccountByName('Карта Укрсиб [Elite]').id,
             toId: currentAccount.id
           };
           transaction.amount = Math.abs(transaction.amount);
@@ -136,7 +142,7 @@ class AlfaParser {
       }
     }
     console.info(transactions);
-    chrome.storage.sync.set({ 'parsedTransactions': transactions });
+    chrome.storage.sync.set({ parsedTransactions: transactions, transactionsSource: 'alfa' });
     return transactions;
   }
 }

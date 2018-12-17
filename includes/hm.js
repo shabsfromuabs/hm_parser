@@ -94,26 +94,37 @@ const getToken = (email, password) =>
     });
 
 function exportTransactions() {
-  chrome.storage.sync.get('parsedTransactions', (result) => {
-    console.log('parsedTransactions', result.parsedTransactions);
-    exportTransaction(result.parsedTransactions, 0);
+  let transactionsSource;
+  chrome.storage.sync.get('transactionsSource', (result) => {
+    console.log('transactionsSource', result.transactionsSource);
+    transactionsSource = result.transactionsSource;
+
+    chrome.storage.sync.get('parsedTransactions', (result) => {
+      console.log('parsedTransactions', result.parsedTransactions);
+      console.log('transactionsSource', transactionsSource);
+      const sortedTransactions = sortBy(result.parsedTransactions, 'date');
+      exportTransaction(sortedTransactions, 0, transactionsSource);
+    });
   });
 }
 
-function exportTransaction(transactions, i) {
+function exportTransaction(transactions, i, transactionsSource = null) {
   const tr = transactions[i];
   if (!tr) return null;
   return createTransaction(token, tr.type, new Date(tr.date), tr.amount, tr.accountInfo, tr.description, tr.category)
     .then(() => {
-      // Remember last transaction's date
-      chrome.storage.sync.set({ 'lastTransaction': new Date(tr.date).getTime() });
+      if (transactionsSource) {
+        // Remember last transaction's date
+        console.log('Set last transaction date', transactionsSource, `last${capitalize(transactionsSource)}Transaction`, tr.date, new Date(tr.date));
+        chrome.storage.sync.set({ [`last${capitalize(transactionsSource)}Transaction`]: new Date(tr.date).getTime() });
+      }
       // TODO: Display success
-      return exportTransaction(transactions, i + 1);
+      return exportTransaction(transactions, i + 1, transactionsSource);
     })
     .catch((e) => {
       console.warn(e);
       // TODO: Display error
-      return exportTransaction(transactions, i + 1);
+      return exportTransaction(transactions, i + 1, transactionsSource);
     });
 }
 

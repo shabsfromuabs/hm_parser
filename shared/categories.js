@@ -75,7 +75,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: 'Побут / Побутова хімія і гігієна', description: 'Покупки в Епіцентрі' }
   },
   {
-    keywords: ['Uber BV', 'UBERTRIP'],
+    keywords: ['Uber BV', 'UBERTRIP', 'UBER trip'],
     details: { category: 'Проїзд / Таксі', description: 'Таксі Uber' }
   },
   {
@@ -117,6 +117,10 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   {
     keywords: ['винагороди в рамках акції Cash back'],
     details: { category: 'Доходи / Кешбек', description: 'Кешбек за кредиткою' }
+  },
+  {
+    keywords: ['Google Music'],
+    details: { category: 'Цифрові продукти / Музика', description: 'Підписка Google Music' }
   }
 ];
 

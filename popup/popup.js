@@ -2,18 +2,9 @@ class Popup {
   constructor() {
     this.initializeButton = document.querySelector('#initialize');
     this.credentialsForm = document.querySelector('#credentials-form');
-    this.loadLastTransaction();
     this.loadCredentials();
     this.addContentScripts();
     this.addEventListeners();
-  }
-
-  // lastTransaction is a int representation of date of last transaction saved to HM like: 823423412 (date.getTime())
-  loadLastTransaction() {
-    chrome.storage.sync.get('lastTransaction', (result) => {
-      console.log('lastTransaction loaded', result.lastTransaction);
-      this.lastTransaction = result.lastTransaction;
-    });
   }
 
   // Loads email and password of HM account and sets to from fields
@@ -30,9 +21,9 @@ class Popup {
   addContentScripts() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const currentTab = tabs[0];
+      chrome.tabs.executeScript(currentTab.id, { file: 'shared/helpers.js' });
       chrome.tabs.executeScript(currentTab.id, { file: 'shared/accounts.js' });
       chrome.tabs.executeScript(currentTab.id, { file: 'shared/categories.js' });
-      chrome.tabs.executeScript(currentTab.id, { file: 'shared/helpers.js' });
 
       if (currentTab.url && currentTab.url.startsWith('https://online.ukrsibbank.com/ibank')) {
         chrome.tabs.executeScript(currentTab.id, { file: 'includes/parserHelpers.js' });
@@ -55,7 +46,7 @@ class Popup {
     // Send "initialize" command to content script on page
     this.initializeButton.addEventListener('click', () => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, { command: 'initialize', lastTransaction: this.lastTransaction });
+        chrome.tabs.sendMessage(tabs[0].id, { command: 'initialize' });
       });
     });
 
@@ -63,8 +54,8 @@ class Popup {
     this.credentialsForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const data = new FormData(this.credentialsForm);
-      chrome.storage.sync.set({ 'credentials': {
-          email: data.get('email'), password: data.get('password') }
+      chrome.storage.sync.set({ credentials: {
+        email: data.get('email'), password: data.get('password') }
       });
     });
   }

@@ -23,20 +23,25 @@ class UkrsibParser {
 
     chrome.runtime.onMessage.addListener((request) => {
       if (request.command === 'initialize') {
-        console.log(request.lastTransaction);
-        this.setStartDate(request.lastTransaction);
+        console.log('initialize parser');
+        this.setStartDate();
         this.addActionButtons();
       }
     });
   }
 
-  setStartDate(lastTransaction) {
-    if (lastTransaction) {
-      // start date will be passed as an integer through messages
-      this.startDate = new Date(lastTransaction);
-      // Increment date so parsing will start from the next day after last date
-      this.startDate.setDate(this.startDate.getDate() + 1);
-    }
+  setStartDate() {
+    // lastUkrsibTransaction is an integer representation of a date when last transaction was exported to HM, like: 823423412
+    chrome.storage.sync.get('lastUkrsibTransaction', (result) => {
+      console.log('lastUkrsibTransaction loaded', result.lastUkrsibTransaction);
+
+      if (result.lastUkrsibTransaction) {
+        // start date will be passed as an integer through messages
+        this.startDate = new Date(result.lastUkrsibTransaction);
+        // Increment date so parsing will start from the next day after last date
+        this.startDate.setDate(this.startDate.getDate() + 1);
+      }
+    });
   }
 
   addActionButtons() {
@@ -101,7 +106,7 @@ class UkrsibParser {
             continue;
           }
           transaction.accountInfo = {
-            fromId: getAccountByName('MC Укрсиб [Elite]').id,
+            fromId: getAccountByName('Карта Укрсиб [Elite]').id,
             toId: getAccountByName(`Гаманець [${user}]`).id
           };
           transaction.amount = Math.abs(transaction.amount);
@@ -110,7 +115,7 @@ class UkrsibParser {
         } else if (description.match(TRANSFER_OPERATION_MATCHERS.topUpFromEntrepreneurAccount)) {
           transaction.accountInfo = {
             fromId: getAccountByName('ФОП Укрсиб UAH').id,
-            toId: getAccountByName('MC Укрсиб [Elite]').id
+            toId: getAccountByName('Карта Укрсиб [Elite]').id
           };
           transaction.amount = Math.abs(transaction.amount);
           transaction.type = 'transfer';
@@ -119,7 +124,7 @@ class UkrsibParser {
           markWarning(row, 'Unhandled money transfer');
           continue;
         } else {
-          transaction.accountInfo = getAccountByName('MC Укрсиб [Elite]').id;
+          transaction.accountInfo = getAccountByName('Карта Укрсиб [Elite]').id;
           transaction.type = transaction.amount < 0 ? 'expense' : 'income';
           const { description: descriptionGuess, category: categoryGuess } = guessTransactionDetails({
             description,
@@ -146,7 +151,7 @@ class UkrsibParser {
       }
     }
     console.info(transactions);
-    chrome.storage.sync.set({ 'parsedTransactions': transactions });
+    chrome.storage.sync.set({ parsedTransactions: transactions, transactionsSource: 'ukrsib' });
     return transactions;
   }
 }
