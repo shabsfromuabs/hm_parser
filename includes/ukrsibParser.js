@@ -4,6 +4,8 @@ const USERS = { '5076': 'Артем', '9292': 'Наталі', '8110': 'Ната�
 const TRANSFER_OPERATION_MATCHERS = {
   withdrawFromATM: 'Отримання готівки в банкоматі',
   topUpFromEntrepreneurAccount: 'Б/г зарахування з іншого рахунку Клієнта',
+  toSavingsTransfer: 'Переказ на власний рахунок Elite накопичувальний',
+  fromSavingsTransfer: 'Переказ на власний рахунок ELITE картковий',
   generalTransfer: 'Переказ грошових коштів'
 };
 
@@ -120,7 +122,25 @@ class UkrsibParser {
           transaction.amount = Math.abs(transaction.amount);
           transaction.type = 'transfer';
           transaction.description = 'Переказ коштів з раухку ФОП';
-        } else if (description.match(TRANSFER_OPERATION_MATCHERS.generalTransfer)) {
+        } else if (description.match(TRANSFER_OPERATION_MATCHERS.toSavingsTransfer)) {
+          transaction.accountInfo = {
+            fromId: getAccountByName('Карта Укрсиб [Elite]').id,
+            toId: getAccountByName('Скарбничка Укрсиб [Elite]').id
+          };
+          transaction.amount = Math.abs(transaction.amount);
+          transaction.type = 'transfer';
+          transaction.description = 'Переказ коштів на накопичувальний рахунок';
+
+        } else if (description.match(TRANSFER_OPERATION_MATCHERS.fromSavingsTransfer)) {
+          transaction.accountInfo = {
+            fromId: getAccountByName('Скарбничка Укрсиб [Elite]').id,
+            toId: getAccountByName('Карта Укрсиб [Elite]').id
+          };
+          transaction.amount = Math.abs(transaction.amount);
+          transaction.type = 'transfer';
+          transaction.description = 'Виведеня коштів з накопичувального рахунку';
+        }
+        else if (description.match(TRANSFER_OPERATION_MATCHERS.generalTransfer)) {
           markWarning(row, 'Unhandled money transfer');
           continue;
         } else {
