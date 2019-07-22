@@ -125,45 +125,46 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   }
 ];
 
-const UKRSIB_CATEGORY_MATCHES = [
+const BANK_CATEGORY_MATCHES = [
+  // Urksib
   {
-    ukrsibCategory: 'Продуктові магазини',
+    bankCategory: 'Продуктові магазини',
     details: { category: "Їжа / Магазини", description: 'Продуктии в магазині' },
   },
   {
-    ukrsibCategory: 'Метро',
+    bankCategory: 'Метро',
     details: { category: 'Проїзд / Громадський траспорт', description: 'Метро' }
   },
   {
-    ukrsibCategory: 'Кафе та ресторани',
+    bankCategory: 'Кафе та ресторани',
     details: { category: 'Розваги / Кафе ресторани клуби' }
   },
   {
-    ukrsibCategory: 'Аптеки',
+    bankCategory: 'Аптеки',
     details: { category: "Здоров'я / Ліки" }
   },
   {
-    ukrsibCategory: 'Спортивні товари',
+    bankCategory: 'Спортивні товари',
     details: { category: 'Спорт / Спорядження' }
   },
   {
-    ukrsibCategory: 'Кіно та театри',
+    bankCategory: 'Кіно та театри',
     details: { category: 'Розваги / Кіно' }
   },
   {
-    ukrsibCategory: 'Догляд за собою',
+    bankCategory: 'Догляд за собою',
     details: { category: 'Краса / Косметика' }
   },
   {
-    ukrsibCategory: 'Потяг',
+    bankCategory: 'Потяг',
     details: { category: 'Подорожі / Переїзд' }
   },
   {
-    ukrsibCategory: "Меблі та інтер'єр",
+    bankCategory: "Меблі та інтер'єр",
     details: { category: 'Побут / Різне' }
   },
   {
-    ukrsibCategory: 'Проценти за депозитом',
+    bankCategory: 'Проценти за депозитом',
     details: { category: 'Доходи / Інвестиції', description: 'Проценти за накопичувальним рахунком' }
   }
 ];
@@ -185,11 +186,11 @@ const guessByDescription = (description) => {
   }
 };
 
-const guessByUkrsibCategory = (uksibCategory) => {
-  const match = UKRSIB_CATEGORY_MATCHES.find((cat) => cat.ukrsibCategory === uksibCategory);
+const guessByBankCategory = (bankCategory) => {
+  const match = BANK_CATEGORY_MATCHES.find((cat) => cat.bankCategory === bankCategory);
   if (match) return match.details;
 };
 
-const guessTransactionDetails = ({ description, ukrsibCategory }) => (
-  guessByDescription(description) || guessByUkrsibCategory(ukrsibCategory) || {}
+const guessTransactionDetails = ({ description, bankCategory }) => (
+  guessByDescription(description) || guessByBankCategory(bankCategory) || {}
 );

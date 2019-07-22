@@ -8,13 +8,14 @@
 <body>
 <div class="wrapper">
   <div class="container-fluid">
-    <button id='initialize' class="btn btn-success btn-block"></button>
-    <a class="btn btn-warning btn-block mb-4" href="https://app.hmbee.ru/app/changelog" target="_blank">
+    <button id='initialize' class="btn btn-info btn-block">Initialize parser</button>
+    <button id='parse' class="btn btn-success btn-block">Parse transactions</button>
+    <a id='open-hm' class="btn btn-warning btn-block" href="https://app.hmbee.ru/app/changelog" target="_blank">
       Open HoneyMoney
     </a>
 
-    <form id="credentials-form">
-      <div class="form-group">
+    <form id="credentials-form" class="mt-4 mb-0 d-none">
+      <div class="form-group mb-0">
         <input type="email" class="form-control form-control-sm mb-2" name="email" placeholder="Email">
         <input type="password" class="form-control form-control-sm mb-2" name="password" placeholder="Password">
         <button type="submit" class="btn btn-primary btn-block btn-sm">Save</button>
