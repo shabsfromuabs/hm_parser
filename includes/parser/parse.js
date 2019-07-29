@@ -38,7 +38,6 @@ const parse = (account, rows) => {
           bankCategory: getBankProposedCategory(row)
         });
         transaction.description = [
-          Math.abs(amount),
           spenderName && `[${spenderName}]`,
           (descriptionGuess || description)
         ].join(' ');

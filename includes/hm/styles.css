@@ -1,0 +1,84 @@
+.transactions-container {
+  padding: 1rem 0 1rem;
+}
+
+.transaction-row {
+  padding-top: 1rem;
+}
+
+.transaction-row.even {
+  background: #f9f9f9;
+}
+
+label {
+  text-transform: capitalize;
+}
+
+form[data-transaction-type="income"] .hm-amount {
+  color: darkgreen;
+}
+
+form[data-transaction-type="expense"] .hm-amount {
+  color: darkred;
+}
+
+.form-group .hm-description {
+  height: 5.7rem;
+}
+
+.check label {
+  box-sizing: initial;
+  display: inline-block;
+  position: relative;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 0;
+  color: transparent;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  border: 1px solid #80bdff;
+}
+
+.check label:hover {
+  box-shadow: inset 0 0 2px 0 #80bdff;
+}
+
+.check label:before, .check label:after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 0;
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  border-radius: 2px;
+  background: #28a745;
+}
+
+.check label:before {
+  transform: rotate(45deg);
+}
+
+.check label:after {
+  transform: rotate(-45deg);
+}
+
+.check input {
+  display: none;
+}
+
+.check input:checked + label:before,
+.check input:checked + label:after  {
+  width: 20px;
+  left: 0;
+}
+
+.check label {
+  transition: background-color 500ms ease;
+}
+.check label:before,
+.check label:after {
+  transition: width 0.15s ease-in-out, left 0.15s ease-in-out;
+}

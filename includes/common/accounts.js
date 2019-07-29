@@ -55,6 +55,8 @@ const ACCOUNTS = [
   { id: 26542, currency: 'uah', name: 'Олег Гончаренко' },
 ];
 
+const getAccounts = () => ACCOUNTS;
+
 const getAccount = (id) => ACCOUNTS.find((acc) => acc.id === id);
 
 const getAccountByName = (name) => ACCOUNTS.find((acc) => acc.name === name);
