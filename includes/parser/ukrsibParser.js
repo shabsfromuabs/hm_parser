@@ -5,7 +5,7 @@ const TRANSFER_MATCHERS = [
   {
     matcher: 'Отримання готівки в банкоматі',
     transactionInfo: ({ account, spenderName }) => ({
-      description: 'Зняття готівки в банкоматі',
+      description: `[${spenderName}] Зняття готівки в банкоматі`,
       from: account.name,
       to: `Гаманець [${spenderName}]`
     })
@@ -27,12 +27,34 @@ const TRANSFER_MATCHERS = [
     })
   },
   {
-    matcher: 'Переказ на власний рахунок ELITE картковий',
+    matcher: 'Переказ на власний рахунок Elite картковий',
     transactionInfo: ({ account }) => ({
       description: 'Виведеня з накопичувального рахунку',
       from: 'Скарбничка Укрсиб [Elite]',
       to: account.name
     })
+  },
+  {
+    matcher: /Купівля іноземної валюти в сумі \d+\.\d\dUSD/,
+    transactionInfo: ({ account, description }) => {
+      const match = description.match(/(\d+\.\d\dUSD) по курсу (\d+\.\d\d)/i);
+      return {
+        description: match ? `Купівля валюти онлайн ${match[1]} курс ${match[2]}` : description,
+        from: account.name,
+        to: 'Карта Укрсиб [Elite] USD'
+      };
+    }
+  },
+  {
+    matcher: /Купівля іноземної валюти в сумі \d+\.\d\dEUR/,
+    transactionInfo: ({ account, description }) => {
+      const match = description.match(/(\d+\.\d\dUSD) по курсу (\d+\.\d\d)/i);
+      return {
+        description: match ? `Купівля валюти онлайн ${match[1]} курс ${match[2]}` : description,
+        from: account.name,
+        to: 'Карта Укрсиб [Elite] EUR'
+      };
+    }
   }
 ];
 
@@ -77,7 +99,7 @@ const getSpenderName = (row) => {
 };
 
 const getTransferAssociatedWithTransaction = ({ amount, description, account, spenderName }) => {
-  const transferMatcher = TRANSFER_MATCHERS.find((tm) => description.match(tm.matcher));
+  const transferMatcher = TRANSFER_MATCHERS.find((tm) => description.match(new RegExp(tm.matcher, 'i')));
   if (transferMatcher) {
     return transferMatcher.transactionInfo({ amount, description, account, spenderName });
   }

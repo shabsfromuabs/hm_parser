@@ -80,8 +80,8 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: 'Проїзд / Таксі', description: 'Таксі Uber' }
   },
   {
-    keywords: ['TAXIFY', 'TXFY.ME'],
-    details: { category: 'Проїзд / Таксі', description: 'Таксі TAXIFY' }
+    keywords: ['TAXIFY', 'TXFY.ME', 'BOLT'],
+    details: { category: 'Проїзд / Таксі', description: 'Таксі BOLT' }
   },
   {
     keywords: ['WFPTAXI'],
@@ -122,6 +122,18 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   {
     keywords: ['Google Music'],
     details: { category: 'Цифрові продукти / Музика', description: 'Підписка Google Music' }
+  },
+  {
+    keywords: ['UA KIYEV Ivana F Yizha'],
+    details: { category: 'Їжа / Кафе', description: 'Бургери на роботі "під мостом"' }
+  },
+  {
+    keywords: ['EMAYDI GRU'],
+    details: { category: "Здоров'я / Лікарі", description: 'Прийом лікаря в клініці "R+"' }
+  },
+  {
+    keywords: ['PESTO CAFE'],
+    description: { category: 'Розваги / Кафе ресторани клуби', description: 'Вечеря в "Pesto cafe"' }
   }
 ];
 
@@ -182,7 +194,7 @@ const guessByDescription = (description) => {
     });
   });
   if (match) {
-    return typeof match.details === 'function' ? match.details(matchedKeyword) : match.details;
+    return typeof match.details === 'function' ? match.details(matchedKeyword, description) : match.details;
   }
 };
 

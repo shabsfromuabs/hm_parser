@@ -59,7 +59,7 @@ const getSpenderName = () => {
 };
 
 const getTransferAssociatedWithTransaction = ({ amount, description, account, spenderName }) => {
-  const transferMatcher = TRANSFER_MATCHERS.find((tm) => description.match(tm.matcher));
+  const transferMatcher = TRANSFER_MATCHERS.find((tm) => description.match(new RegExp(tm.matcher, 'i')));
   if (transferMatcher) {
     return transferMatcher.transactionInfo({ amount, description, account, spenderName });
   }

@@ -2,6 +2,14 @@
   padding: 1rem 0 1rem;
 }
 
+.hm-date {
+  padding: 1.5rem 1rem 0.5rem;
+}
+
+.hm-date:not(:first-child) {
+  border-top: 1px solid #ced4da;
+}
+
 .transaction-row {
   padding-top: 1rem;
 }
@@ -10,23 +18,19 @@
   background: #f9f9f9;
 }
 
-label {
-  text-transform: capitalize;
-}
-
-form[data-transaction-type="income"] .hm-amount {
+form[data-transaction-type="income"] .hm-amount .form-control {
   color: darkgreen;
 }
 
-form[data-transaction-type="expense"] .hm-amount {
+form[data-transaction-type="expense"] .hm-amount .form-control {
   color: darkred;
 }
 
-.form-group .hm-description {
+.form-group .hm-description .form-control {
   height: 5.7rem;
 }
 
-.check label {
+label.ui-checkbox {
   box-sizing: initial;
   display: inline-block;
   position: relative;
@@ -41,11 +45,11 @@ form[data-transaction-type="expense"] .hm-amount {
   border: 1px solid #80bdff;
 }
 
-.check label:hover {
+label.ui-checkbox:hover {
   box-shadow: inset 0 0 2px 0 #80bdff;
 }
 
-.check label:before, .check label:after {
+label.ui-checkbox:before, label.ui-checkbox:after {
   content: '';
   display: block;
   height: 4px;
@@ -55,30 +59,22 @@ form[data-transaction-type="expense"] .hm-amount {
   left: 10px;
   border-radius: 2px;
   background: #28a745;
+  transition: width 0.15s ease-in-out, left 0.15s ease-in-out;
 }
-
-.check label:before {
+label.ui-checkbox:before {
   transform: rotate(45deg);
 }
 
-.check label:after {
+label.ui-checkbox:after {
   transform: rotate(-45deg);
 }
 
-.check input {
+label.ui-checkbox input {
   display: none;
 }
 
-.check input:checked + label:before,
-.check input:checked + label:after  {
+label.ui-checkbox.checked:before,
+label.ui-checkbox.checked:after  {
   width: 20px;
   left: 0;
-}
-
-.check label {
-  transition: background-color 500ms ease;
-}
-.check label:before,
-.check label:after {
-  transition: width 0.15s ease-in-out, left 0.15s ease-in-out;
 }

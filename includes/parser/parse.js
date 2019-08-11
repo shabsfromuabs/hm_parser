@@ -13,6 +13,8 @@ const parse = (account, rows) => {
       const description = getDescription(row);
       const spenderName = getSpenderName(row);
 
+      transaction.originalDescription = description;
+
       const transferTransactionDetails = getTransferAssociatedWithTransaction({
         amount, description, account, spenderName
       });
@@ -20,19 +22,18 @@ const parse = (account, rows) => {
       if (transferTransactionDetails) {
         // This is a transfer transaction
         transaction.type = 'transfer';
-        transaction.amount = transferTransactionDetails.amount || Math.abs(amount);
+        transaction.fromAmount = transferTransactionDetails.fromAmount || Math.abs(amount);
+        transaction.toAmount = transferTransactionDetails.toAmount || Math.abs(amount);
         transaction.description = transferTransactionDetails.description;
-        const from = getAccountByName(transferTransactionDetails.to);
-        const to = getAccountByName(transferTransactionDetails.from);
-        transaction.accountInfo = {
-          fromId: from && from.id,
-          toId: to && to.id,
-        };
+        const from = getAccountByName(transferTransactionDetails.from);
+        const to = getAccountByName(transferTransactionDetails.to);
+        transaction.fromAccountId = from && from.id;
+        transaction.toAccountId = to && to.id;
       } else {
         // This is a regular transaction
         transaction.type = amount < 0 ? 'expense' : 'income';
         transaction.amount = amount;
-        transaction.accountInfo = account.id;
+        transaction.accountId = account.id;
         const { description: descriptionGuess, category: categoryGuess } = guessTransactionDetails({
           description,
           bankCategory: getBankProposedCategory(row)
@@ -45,6 +46,7 @@ const parse = (account, rows) => {
       }
 
       transactions.push(transaction);
+      row.style.backgroundColor = 'rgba(0, 128, 0, 0.2)';
     } catch (e) {
       console.warn(row.innerText, e);
       row.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';

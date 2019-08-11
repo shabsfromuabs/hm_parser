@@ -1,3 +1,5 @@
+TRANSACTION_TYPE_CODES = { expense: 'e', income: 'i', transfer: 't' };
+
 const getToken = (email, password) =>
   fetch('/api/user_session', {
     method: 'POST',
@@ -24,47 +26,57 @@ const getToken = (email, password) =>
       }
     });
 
-const createTransaction = (
+const createTransaction = ({
   token,
   type,
   date,
   amount,
-  accountInfo, // accountId OR { fromId: x, toId: y }
-  description = null,
-  category = null
-) => {
+  fromAmount,
+  toAmount,
+  accountId,
+  fromAccountId,
+  toAccountId,
+  category = null,
+  description = null
+}) => {
   const formattedDate = [
     date.getFullYear(),
     zeroPaddedNumber(date.getMonth() + 1),
     zeroPaddedNumber(date.getDate())
   ].join('-');
 
-  const accountId = type === 'transfer' ? accountInfo.toId : accountInfo;
-  const currency = getAccount(accountId).currency;
-  const subtype = TRANSACTION_TYPE_CODES[type];
-
-  const params = {
-    transaction: {
-      account_id: accountId,
-      category,
-      currency,
-      date: formattedDate,
-      description,
-      real_amount: amount,
-      subtype,
-      type: 'unplanned',
-      virtual_id: -1
-    }
+  const commonFields = {
+    subtype: TRANSACTION_TYPE_CODES[type],
+    category,
+    date: formattedDate,
+    transfer_type: 'a',
+    type: 'unplanned',
+    virtual_id: -1
   };
 
-  if (type === 'transfer') {
-    const transaction = params.transaction;
-    transaction.transfer_from_id = accountInfo.fromId;
-    transaction.transfer_to_amount = amount;
-    transaction.transfer_to_currency = null;
-    transaction.transfer_to_id = accountInfo.toId;
-    transaction.transfer_type = 'a';
-  }
+  const transaction =
+    type !== 'transfer' ?
+      {
+        ...commonFields,
+        description: [Math.abs(amount), description].join(' '),
+        account_id: accountId,
+        currency: getAccount(accountId).currency,
+        real_amount: amount
+      } : {
+        ...commonFields,
+        description,
+        // From
+        transfer_from_id: fromAccountId,
+        account_id: fromAccountId,
+        real_amount: fromAmount,
+        currency: getAccount(fromAccountId).currency,
+        // To
+        transfer_to_id: toAccountId,
+        transfer_to_amount: toAmount,
+        transfer_to_currency: getAccount(toAccountId).currency
+      };
+
+  console.log(transaction);
 
   return fetch('/api/transaction', {
     method: 'POST',
@@ -75,6 +87,6 @@ const createTransaction = (
       user_email: 'shabsfromuabs@gmail.com',
       user_token: token
     },
-    body: JSON.stringify(params)
+    body: JSON.stringify({ transaction })
   });
 };

@@ -1,12 +1,12 @@
 const addTextFromGroup = (target, name, value, className = '') => {
-  const formGroup = appendHtmlElement('div', target, 'form-group');
-  appendHtmlElement('input', formGroup, `form-control ${className}`, { type: 'text', name, value });
+  const formGroup = appendHtmlElement('div', target, `form-group ${className}`);
+  appendHtmlElement('input', formGroup, 'form-control', { type: 'text', name, value });
   return formGroup;
 };
 
 const addTextAraFormGroup = (target, name, value, className = '') => {
-  const formGroup = appendHtmlElement('div', target, 'form-group');
-  appendHtmlElement('textarea', formGroup, `form-control ${className}`, { name, rows: 3, value });
+  const formGroup = appendHtmlElement('div', target, `form-group ${className}`);
+  appendHtmlElement('textarea', formGroup, 'form-control', { name, rows: 3, value });
   return formGroup;
 };
 
@@ -24,16 +24,14 @@ const addSelectFormGroup = (target, options, name, selectedValue, className = ''
   return formGroup;
 };
 
-const addPrettyCheckbox = (target, name, value, checked) => {
-  const check = appendHtmlElement('div', target, 'check');
-  const id = `tr-checkbox-${Math.random()}`;
-  appendHtmlElement('input', check, '', { type: 'checkbox', name, value, checked, id });
-  appendHtmlElement('label', check, '', { htmlFor: id, innerText: value });
-  return check;
+const addCheckbox = (target, name, value, checked) => {
+  const label = appendHtmlElement('label', target, `ui-checkbox${checked ? ' checked' : ''}`, { innerText: value });
+  appendHtmlElement('input', label, '', { type: 'checkbox', name, value, checked });
+  return label;
 };
 
-const addToggleBtn = (target, name, value, checked) => {
-  const label = appendHtmlElement('label', target, `btn btn-secondary${checked ? ' active' : ''}`, { innerText: value });
+const addToggleBtn = (target, name, value, checked, btnText) => {
+  const label = appendHtmlElement('label', target, `btn btn-secondary${checked ? ' active' : ''}`, { innerText: btnText });
   appendHtmlElement('input', label, '', { type: 'radio', name, value, checked });
   return label;
 };
