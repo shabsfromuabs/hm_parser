@@ -18,6 +18,18 @@
   background: #f9f9f9;
 }
 
+.transaction-row.success {
+  background: rgba(0, 128, 0, 0.05);
+}
+
+.transaction-row.even.success {
+  background: rgba(0, 128, 0, 0.1);
+}
+
+.transaction-row.error {
+  background: rgba(255, 0, 0, 0.2);
+}
+
 form[data-transaction-type="income"] .hm-amount .form-control {
   color: darkgreen;
 }

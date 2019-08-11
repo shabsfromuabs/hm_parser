@@ -79,7 +79,7 @@ class HmUploader {
   addExportBtn() {
     const row = appendHtmlElement('div', this.container, 'row');
     const col = appendHtmlElement('div', row, 'col text-right');
-    const exportBtn = appendHtmlElement('button', col, 'btn btn-success btn-lg', { innerText: 'Export' });
+    const exportBtn = appendHtmlElement('button', col, 'btn btn-success btn-lg', { innerText: 'Експортувати' });
     exportBtn.addEventListener('click', () => {
       this.transactions = Object.keys(this.transactionRows).map((id) => (
         this.getTransactionDetails(id)
@@ -229,7 +229,9 @@ class HmUploader {
 
   exportTransaction(i) {
     const tr = this.transactions[i];
+
     if (!tr) return null;
+    const { form } = this.transactionRows[i];
     const {
       type,
       date,
@@ -256,11 +258,13 @@ class HmUploader {
       description
     })
       .then(() => {
-        // TODO: Display success
+        form.classList.remove('error');
+        form.classList.add('success');
         this.exportTransaction(i + 1);
       })
       .catch((e) => {
-        // TODO: Display error
+        form.classList.remove('success');
+        form.classList.add('error');
         console.warn(e);
       });
   }
