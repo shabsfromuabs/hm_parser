@@ -34,7 +34,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: "Проїзд / Громадський траспорт", description: 'Метро' }
   },
   {
-    keywords: ['BILLA', 'SILPO', 'LOTOK', 'VELMART', 'AUCHAN', 'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket'],
+    keywords: ['BILLA', 'SILPO', 'LOTOK', 'VELMART', 'AUCHAN', 'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket', 'MAGAZINKOLO'],
     details: (keyword) => {
       const shopNames = {
         'BILLA': 'Billa',
@@ -47,6 +47,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
         'SUPERMARKETEKO': 'Еко маркет',
         'METRO': 'Metro',
         'SamMarket': 'Сам маркет',
+        'MAGAZINKOLO': 'Kolo'
       };
       return { category: 'Їжа / Магазини', description: `Продуктии в "${shopNames[keyword]}"` };
     }
@@ -56,7 +57,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: 'Їжа / Магазини', description: 'Продуктии в "Novus"' }
   },
   {
-    keywords: ['RPRODUKTOVIYMAGAZIN', 'MAGAZINMARKET'],
+    keywords: ['RPRODUKTOVIYMAGAZIN', 'MAGAZINMARKET', 'MINI MARKET'],
     details: { category: "Їжа / Магазини", description: 'Продуктии в магазині' }
   },
   {
@@ -64,8 +65,12 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: 'Їжа / Кафе', description: "Обід в McDonald's" }
   },
   {
-    keywords: ['EVROSMAK'],
-    details: { category: 'Їжа / Кафе', description: 'Обід на роботі в бізнес центрі' }
+    keywords: ['KFC'],
+    details: { category: 'Їжа / Кафе', description: "Обід в KFC" }
+  },
+  {
+    keywords: ['Evrosmak', 'Dolchesalaterija', 'Cafe Dinners'],
+    details: (keyword) => ({ category: 'Їжа / Кафе', description: `Обід на роботі в ${keyword}` })
   },
   {
     keywords: ['EVRASIYA'],
@@ -120,11 +125,15 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: 'Доходи / Кешбек', description: 'Кешбек за кредиткою' }
   },
   {
+    keywords: ['Перерахування винагороди згідно транзакції'],
+    details: { category: 'Доходи / Кешбек', description: 'Кешбек за CashYouClub' }
+  },
+  {
     keywords: ['Google Music'],
     details: { category: 'Цифрові продукти / Музика', description: 'Підписка Google Music' }
   },
   {
-    keywords: ['UA KIYEV Ivana F Yizha'],
+    keywords: ['UA KIYEV Ivana F Yizha', /Yizha.+KIYEV/],
     details: { category: 'Їжа / Кафе', description: 'Бургери на роботі "під мостом"' }
   },
   {

@@ -46,10 +46,10 @@ const parse = (account, rows) => {
       }
 
       transactions.push(transaction);
-      row.style.backgroundColor = 'rgba(0, 128, 0, 0.2)';
+      markRowWithColor(row, 'rgba(0, 128, 0, 0.2)');
     } catch (e) {
       console.warn(row.innerText, e);
-      row.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+      markRowWithColor(row, 'rgba(255, 0, 0, 0.2)');
     }
   }
   console.log(transactions);

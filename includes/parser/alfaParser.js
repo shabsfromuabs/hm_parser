@@ -66,6 +66,10 @@ const getTransferAssociatedWithTransaction = ({ amount, description, account, sp
   return null;
 };
 
+const markRowWithColor = (row, color) => {
+  row.querySelectorAll('td').forEach((td) => td.style.backgroundColor = color);
+};
+
 class AlfaParser {
   constructor() {
     const cardName = document.querySelector('.card-primary').innerText;

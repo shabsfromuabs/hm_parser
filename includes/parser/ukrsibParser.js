@@ -106,6 +106,8 @@ const getTransferAssociatedWithTransaction = ({ amount, description, account, sp
   return null;
 };
 
+const markRowWithColor = (row, color) => row.style.backgroundColor = color;
+
 class UkrsibParser {
   constructor() {
     const account = getAccountByName('Карта Укрсиб [Elite]');
