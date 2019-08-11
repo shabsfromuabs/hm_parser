@@ -19,31 +19,3 @@ chrome.runtime.onInstalled.addListener(function () {
     }]);
   });
 });
-
-// Expense/Income/Transfer
-//
-// subtype: "e" / "i" / "t"
-// description: "10.55 Розхід" / "10.55 Дохід" / "Переказ"
-//
-// category: "Їжа / Магазини"
-// date: "2019-08-10"
-// transfer_type: "a"
-// type: "unplanned"
-// virtual_id: -1
-
-// Expense/Income
-//
-// account_id: 19403
-// currency: "uah"
-// real_amount: -10.55 / 10.55
-
-// Transfer
-//
-// transfer_from_id: 19403
-// account_id: 19403
-// real_amount: 25.65
-// currency: "uah"
-//
-// transfer_to_id: 19417
-// transfer_to_amount: 1.01
-// transfer_to_currency: null // "usd"

@@ -68,6 +68,7 @@ class Popup {
         chrome.tabs.executeScript(currentTab.id, { file: 'includes/parser/alfaParser.js' });
         chrome.tabs.executeScript(currentTab.id, { file: 'includes/parser/parse.js' });
       } else if (currentTab.url && currentTab.url.startsWith('https://app.hmbee.ru/app')) {
+        chrome.tabs.executeScript(currentTab.id, { file: 'includes/hm/autocompleter.js' });
         chrome.tabs.executeScript(currentTab.id, { file: 'includes/hm/uiHelpers.js' });
         chrome.tabs.executeScript(currentTab.id, { file: 'includes/hm/helpers.js' });
         chrome.tabs.executeScript(tabs[0].id, { file: 'includes/hm/hm.js' });

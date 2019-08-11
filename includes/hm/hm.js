@@ -173,7 +173,7 @@ class HmUploader {
     addAccountsSelect(colSelects, 'transaction_account_from', tr.fromAccountId || tr.accountId, !isTransfer ? 'd-none' : '');
     addAccountsSelect(colSelects, 'transaction_account_to', tr.toAccountId || tr.accountId, !isTransfer ? 'd-none' : '');
     // Category
-    addCategoriesSelect(colSelects, 'transaction_category', tr.category, isTransfer ? 'd-none' : '');
+    addCategoriesSelect(colSelects, 'transaction_category', tr.category || '', isTransfer ? 'd-none' : '');
     // Description
     const formGroup = addTextAraFormGroup(colDescription, 'transaction_description', tr.description, 'hm-description');
     formGroup.children[0].setAttribute('title', tr.originalDescription || '');

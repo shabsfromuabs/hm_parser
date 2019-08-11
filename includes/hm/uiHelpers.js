@@ -44,6 +44,26 @@ const addAccountsSelect = (target, name, selectedId, className = '') => {
 };
 
 const addCategoriesSelect = (target, name, selectedValue, className = '') => {
-  const options = ['', ...getCategories()];
-  return addSelectFormGroup(target, options, name, selectedValue, className);
+  const categories = getCategories();
+  const formGroup = addTextFromGroup(target, name, selectedValue, className);
+  const input = formGroup.querySelector('input');
+
+  autocomplete({
+    input: input,
+    minLength: 0,
+    fetch(text, update) {
+      const regex = new RegExp(text, 'i');
+      var suggestions = categories.filter(cat => cat.match(regex));
+      update(suggestions);
+    },
+    render(item) {
+      var div = document.createElement('div');
+      div.innerText = item;
+      return div;
+    },
+    onSelect(item) {
+      input.value = item;
+    }
+  });
+  return formGroup;
 };

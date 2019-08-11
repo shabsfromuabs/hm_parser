@@ -78,3 +78,24 @@ label.ui-checkbox.checked:after  {
   width: 20px;
   left: 0;
 }
+
+.autocomplete {
+  padding: 2px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete div {
+  padding: 4px 8px;
+}
+
+.autocomplete div:not(:first-child) {
+  border-top: 1px solid #eee;
+}
+
+.autocomplete div.selected {
+  background-color: #6c757d;
+  color: #fff;
+}
