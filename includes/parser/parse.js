@@ -22,8 +22,8 @@ const parse = (account, rows) => {
       if (transferTransactionDetails) {
         // This is a transfer transaction
         transaction.type = 'transfer';
-        transaction.fromAmount = transferTransactionDetails.fromAmount || Math.abs(amount);
-        transaction.toAmount = transferTransactionDetails.toAmount || Math.abs(amount);
+        transaction.fromAmount = Math.abs(transferTransactionDetails.fromAmount || amount);
+        transaction.toAmount = Math.abs(transferTransactionDetails.toAmount || amount);
         transaction.description = transferTransactionDetails.description;
         const from = getAccountByName(transferTransactionDetails.from);
         const to = getAccountByName(transferTransactionDetails.to);

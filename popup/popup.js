@@ -38,7 +38,7 @@ class Popup {
     this.credentialsForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const data = new FormData(this.credentialsForm);
-      chrome.storage.sync.set({ credentials: {
+      chrome.storage.local.set({ credentials: {
         email: data.get('email'), password: data.get('password') }
       });
     });
@@ -46,7 +46,7 @@ class Popup {
 
   // Loads email and password of HM account and sets to from fields
   loadCredentials() {
-    chrome.storage.sync.get('credentials', (result) => {
+    chrome.storage.local.get('credentials', (result) => {
       const credentials = result.credentials || {};
       this.credentialsForm.querySelector('input[name="email"]').value = credentials.email || null;
       this.credentialsForm.querySelector('input[name="password"]').value = credentials.password || null;

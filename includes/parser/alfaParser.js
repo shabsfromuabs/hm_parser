@@ -2,9 +2,7 @@ const detectCurrentAccount = (cardNumber) => {
   if (cardNumber === '4102xxxxxxx5728') return getAccountByName('Карта Альфа Debit [Артем]');
   else if (cardNumber === '4102xxxxxxx4587') return getAccountByName('Карта Альфа Travel [Артем]');
   else if (cardNumber === '5355xxxxxxx7060') return getAccountByName('Карта Альфа Credit [Артем]');
-  // TODO: Add card number
-  else if (cardNumberi === '') return getAccountByName('Карта Альфа [Наталі]');
-  // else if (cardNumber === '4102xxxxxxx4728') return null; // EUR Artem
+  else if (cardNumber === '4102xxxxxxx7527') return getAccountByName('Карта Альфа [Наталі]');
   return null
 };
 
@@ -79,7 +77,7 @@ class AlfaParser {
     chrome.runtime.onMessage.addListener((request) => {
       if (request.command === 'parse') {
         console.log('parsing');
-        chrome.storage.sync.set({
+        chrome.storage.local.set({
           parsedTransactions: parse(
             account,
             document.querySelectorAll('table.x-acct-operations tbody tr')

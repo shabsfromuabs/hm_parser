@@ -36,23 +36,27 @@ const TRANSFER_MATCHERS = [
   },
   {
     matcher: /Купівля іноземної валюти в сумі \d+\.\d\dUSD/,
-    transactionInfo: ({ account, description }) => {
-      const match = description.match(/(\d+\.\d\dUSD) по курсу (\d+\.\d\d)/i);
+    transactionInfo: ({ amount, account, description }) => {
+      const match = description.match(/(\d+\.\d\d)USD по курсу (\d+\.\d\d)/i);
       return {
-        description: match ? `Купівля валюти онлайн ${match[1]} курс ${match[2]}` : description,
+        description: match ? `Купівля валюти онлайн ${match[1]}USD курс ${match[2]}` : description,
         from: account.name,
-        to: 'Карта Укрсиб [Elite] USD'
+        to: 'Карта Укрсиб [Elite] USD',
+        fromAmount: amount,
+        toAmount: match ? parseFloat(match[1]) : amount
       };
     }
   },
   {
     matcher: /Купівля іноземної валюти в сумі \d+\.\d\dEUR/,
-    transactionInfo: ({ account, description }) => {
-      const match = description.match(/(\d+\.\d\dUSD) по курсу (\d+\.\d\d)/i);
+    transactionInfo: ({ amount, account, description }) => {
+      const match = description.match(/(\d+\.\d\d)EUR по курсу (\d+\.\d\d)/i);
       return {
-        description: match ? `Купівля валюти онлайн ${match[1]} курс ${match[2]}` : description,
+        description: match ? `Купівля валюти онлайн ${match[1]}EUR курс ${match[2]}` : description,
         from: account.name,
-        to: 'Карта Укрсиб [Elite] EUR'
+        to: 'Карта Укрсиб [Elite] EUR',
+        fromAmount: amount,
+        toAmount: match ? parseFloat(match[1]) : amount
       };
     }
   }
@@ -115,7 +119,7 @@ class UkrsibParser {
     chrome.runtime.onMessage.addListener((request) => {
       if (request.command === 'parse') {
         console.log('parsing');
-        chrome.storage.sync.set({
+        chrome.storage.local.set({
           parsedTransactions: parse(
             account,
             document.querySelectorAll('.data .transactionItemPanel')

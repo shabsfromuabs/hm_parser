@@ -28,7 +28,7 @@ class HmUploader {
   }
 
   setToken() {
-    chrome.storage.sync.get('credentials', (result) => {
+    chrome.storage.local.get('credentials', (result) => {
       const credentials = result.credentials || {};
       getToken(credentials.email, credentials.password)
         .then((token) => {
@@ -42,7 +42,7 @@ class HmUploader {
   }
 
   setTransactions() {
-    chrome.storage.sync.get('parsedTransactions', (result) => {
+    chrome.storage.local.get('parsedTransactions', (result) => {
       this.transactions = sortBy(result.parsedTransactions, 'date');
       console.log('transactions', this.transactions);
       this.renderTransactions();
@@ -162,13 +162,12 @@ class HmUploader {
     form.setAttribute('data-transaction-type', tr.type);
 
     const isTransfer = tr.type === 'transfer';
-    const amount = tr.amount || tr.fromAmount;
     // Date
     appendHtmlElement('input', colAmount, '', { type: 'hidden', name: 'transaction_date', value: tr.date });
     // Amount
-    addTextFromGroup(colAmount, 'transaction_amount', amount, `hm-amount ${isTransfer ? 'd-none' : ''}`);
-    addTextFromGroup(colAmount, 'transaction_amount_from', amount, isTransfer ? '' : 'd-none');
-    addTextFromGroup(colAmount, 'transaction_amount_to', amount, isTransfer ? '' : 'd-none');
+    addTextFromGroup(colAmount, 'transaction_amount', tr.amount, `hm-amount ${isTransfer ? 'd-none' : ''}`);
+    addTextFromGroup(colAmount, 'transaction_amount_from', tr.fromAmount, isTransfer ? '' : 'd-none');
+    addTextFromGroup(colAmount, 'transaction_amount_to', tr.toAmount, isTransfer ? '' : 'd-none');
     // Account
     addAccountsSelect(colSelects, 'transaction_account', tr.accountId || tr.fromAccountId, isTransfer ? 'd-none' : '');
     addAccountsSelect(colSelects, 'transaction_account_from', tr.fromAccountId || tr.accountId, !isTransfer ? 'd-none' : '');

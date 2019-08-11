@@ -10,12 +10,12 @@ const CATEGORIES = [
   "Одяг / Одяг", "Одяг / Взуття", "Одяг / Аксесуари", "Одяг / Ремонт",
   "Побут / Побутова хімія і гігієна", "Побут / Посуд", "Побут / Меблі", "Побут / Різне",
   "Подарунки / Друзям і рідним", "Подарунки / Колегам", "Подарунки / Собі", "Допомога батькам",
-  "Подорожі / Оренда машини", "Подорожі / Заправка машини", "Подорожі / Переїзд",
+  "Подорожі / Автопрокат", "Подорожі / Заправка машини", "Подорожі / Переїзд",
   "Подорожі / Транспорт", "Подорожі / Харчування", "Подорожі / Проживання", "Подорожі / Екскурсії", "Подорожі / Сувеніри",
   "Подорожі / Віза", "Подорожі / Путівки",
   "Подорожі / Різне", "Подорожі / Речі для подорожей",
   "Послуги / Банківські", "Послуги / Державні",
-  "Проїзд / Громадський траспорт", "Проїзд / Таксі",
+  "Проїзд / Громадський траспорт", "Проїзд / Таксі", "Проїзд / Міжміський",
   "Розваги / Активний відпочинок", "Розваги / Вдома і на природі", "Розваги / Кафе ресторани клуби",
   "Розваги / Концерти", "Розваги / Кіно", "Розваги / Різне",
   "Секс / Контрацепція",
@@ -30,74 +30,95 @@ const CATEGORIES = [
 
 const CATEGORIES_DESCRIPTION_MATCHES = [
   {
-    keywords: ['KYIVSKYI METRO'],
-    details: { category: "Проїзд / Громадський траспорт", description: 'Метро' }
-  },
-  {
-    keywords: ['BILLA', 'SILPO', 'LOTOK', 'VELMART', 'AUCHAN', 'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket', 'MAGAZINKOLO'],
+    keywords: ['BILLA', 'SILPO', 'NOVUS', 'LOMONOS MAGAZIN PRODUK', 'LOMONOS PRODUKTOVIY', 'LOTOK', 'VELMART', 'AUCHAN',
+      'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket', 'MAGAZINKOLO', 'MEGAMARKET'],
     details: (keyword) => {
       const shopNames = {
         'BILLA': 'Billa',
         'SILPO': 'Сільпо',
         'SLPO': 'Сільпо',
-        'LOTOK': 'Лоток',
-        'VELMART': 'Велмарт',
-        'AUCHAN': 'Ашан',
+        'NOVUS': 'Novus',
+        'LOMONOS MAGAZIN PRODUK': 'Novus',
+        'LOMONOS PRODUKTOVIY': 'Novus',
+        'LOTOK': 'Лотку',
+        'VELMART': 'Велмарті',
+        'AUCHAN': 'Ашані',
         'SHOP ATB': 'АТБ',
         'SUPERMARKETEKO': 'Еко маркет',
         'METRO': 'Metro',
         'SamMarket': 'Сам маркет',
-        'MAGAZINKOLO': 'Kolo'
+        'MAGAZINKOLO': 'Kolo',
+        'MEGAMARKET': 'Мегамаркеті'
       };
       return { category: 'Їжа / Магазини', description: `Продуктии в "${shopNames[keyword]}"` };
     }
-  },
-  {
-    keywords: ['NOVUS', 'LOMONOS MAGAZIN PRODUK', 'LOMONOS PRODUKTOVIY'],
-    details: { category: 'Їжа / Магазини', description: 'Продуктии в "Novus"' }
   },
   {
     keywords: ['RPRODUKTOVIYMAGAZIN', 'MAGAZINMARKET', 'MINI MARKET'],
     details: { category: "Їжа / Магазини", description: 'Продуктии в магазині' }
   },
   {
-    keywords: ['McDonald'],
-    details: { category: 'Їжа / Кафе', description: "Обід в McDonald's" }
-  },
-  {
-    keywords: ['KFC'],
-    details: { category: 'Їжа / Кафе', description: "Обід в KFC" }
+    keywords: ['McDonald', 'KFC', 'AROMAKAVA'],
+    details: (keyword) => {
+      const cafeNames = {
+        'McDonald': "McDonald's",
+        'KFC': "KFC",
+        'AROMAKAVA': "Aroma Kava",
+      };
+      return { category: 'Їжа / Кафе', description: `Обід в "${cafeNames[keyword]}"` };
+    }
   },
   {
     keywords: ['Evrosmak', 'Dolchesalaterija', 'Cafe Dinners'],
-    details: (keyword) => ({ category: 'Їжа / Кафе', description: `Обід на роботі в ${keyword}` })
+    details: (keyword) => ({ category: 'Їжа / Кафе', description: `Обід на роботі в "${keyword}"` })
   },
   {
-    keywords: ['EVRASIYA'],
-    details: { category: 'Розваги / Кафе ресторани клуби', description: 'Вечеря в Євразії' }
+    keywords: ['UA KIYEV Ivana F Yizha', /Yizha.+KIYEV/],
+    details: { category: 'Їжа / Кафе', description: 'Бургери на роботі "під мостом"' }
   },
   {
-    keywords: ['EPITSENTR', 'EPICENTR'],
-    details: { category: 'Побут / Побутова хімія і гігієна', description: 'Покупки в Епіцентрі' }
+    keywords: ['EVRASIYA', 'EVRAZIYAYA', 'PESTO CAFE', 'GENATSVALEIHIN', 'Restoran Mill'],
+    details: (keyword) => {
+      const cafeNames = {
+        'EVRASIYA': 'Євразії',
+        'EVRAZIYAYA': 'Євразії',
+        'PESTO CAFE': 'Pesto Cafe',
+        'GENATSVALEIHIN': 'Геніцвалі і Хінкалі',
+        'Restoran Mill': 'Mill Hub'
+      };
+      return { category: 'Розваги / Кафе ресторани клуби', description: `Вечеря в "${cafeNames[keyword]}"` };
+    }
   },
   {
-    keywords: ['Uber BV', 'UBERTRIP', 'UBER trip'],
-    details: { category: 'Проїзд / Таксі', description: 'Таксі Uber' }
+    keywords: ['KYIVSKYI METRO'],
+    details: { category: "Проїзд / Громадський траспорт", description: 'Метро' }
   },
   {
-    keywords: ['TAXIFY', 'TXFY.ME', 'BOLT'],
-    details: { category: 'Проїзд / Таксі', description: 'Таксі BOLT' }
-  },
-  {
-    keywords: ['WFPTAXI'],
-    details: { category: 'Проїзд / Таксі', description: 'Таксі Uklon' }
+    keywords: ['UBER', 'BOLT', 'WFPTAXI'],
+    details: (keyword) => {
+      const taxiNames = {
+        'UBER': 'Uber',
+        'BOLT': 'Bolt',
+        'WFPTAXI': 'Uklon'
+      };
+      return { category: 'Проїзд / Таксі', description: `Таксі ${taxiNames[keyword]}` };
+    }
   },
   {
     keywords: ['BOOKINGUZGOV', 'UZ.GOV.UA'],
     details: { category: 'Подорожі / Переїзд', description: 'Квитки на потяг' }
   },
   {
-    keywords: ['RESERVED', 'MOHITO', 'CROPPTOWN', 'CROPP TOWN', 'HOUSE', 'NEW YORKER', 'ZARA', 'BEFREE', 'OLKO', 'OGGI', 'STRADIVARIUS'],
+    keywords: ['AVIS PREPAID'],
+    details: { category: 'Подорожі / Автопрокат', description: 'Оренда авто в Avis' }
+  },
+  {
+    keywords: ['EPITSENTR', 'EPICENTR'],
+    details: { category: 'Побут / Побутова хімія і гігієна', description: 'Покупки в Епіцентрі' }
+  },
+  {
+    keywords: ['RESERVED', 'MOHITO', 'CROPPTOWN', 'CROPP TOWN', 'HOUSE', 'NEW YORKER', 'ZARA', 'BEFREE', 'OLKO',
+      'OGGI', 'STRADIVARIUS'],
     details: (keyword) => ({ category: 'Одяг / Одяг', description: `Одяг в "${keyword}"` })
   },
   {
@@ -109,12 +130,20 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: 'Краса / Послуги', description: 'Стрижка' }
   },
   {
-    keywords: ['Утримання податку'],
-    details: { category: 'Послуги / Державні', description: 'Податок на доходи' }
+    keywords: ['Google Music'],
+    details: { category: 'Цифрові продукти / Музика', description: 'Підписка Google Music' }
+  },
+  {
+    keywords: ['EMAYDI GRU'],
+    details: { category: "Здоров'я / Лікарі", description: 'Прийом лікаря в клініці "R+"' }
   },
   {
     keywords: ['ЗАРАХУВАННЯ З/П', 'ЗАРАХ.З/П'],
     details: { category: 'Зарплата', description: 'Зарплата' }
+  },
+  {
+    keywords: ['Утримання податку'],
+    details: { category: 'Послуги / Державні', description: 'Податок на доходи' }
   },
   {
     keywords: ['Виплата нарах. відсотків'],
@@ -127,22 +156,6 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   {
     keywords: ['Перерахування винагороди згідно транзакції'],
     details: { category: 'Доходи / Кешбек', description: 'Кешбек за CashYouClub' }
-  },
-  {
-    keywords: ['Google Music'],
-    details: { category: 'Цифрові продукти / Музика', description: 'Підписка Google Music' }
-  },
-  {
-    keywords: ['UA KIYEV Ivana F Yizha', /Yizha.+KIYEV/],
-    details: { category: 'Їжа / Кафе', description: 'Бургери на роботі "під мостом"' }
-  },
-  {
-    keywords: ['EMAYDI GRU'],
-    details: { category: "Здоров'я / Лікарі", description: 'Прийом лікаря в клініці "R+"' }
-  },
-  {
-    keywords: ['PESTO CAFE'],
-    description: { category: 'Розваги / Кафе ресторани клуби', description: 'Вечеря в "Pesto cafe"' }
   }
 ];
 
