@@ -105,6 +105,29 @@ const CATEGORIES = [
 
 const CATEGORIES_DESCRIPTION_MATCHES = [
   {
+    keywords: ['KYIVSKYI METRO'],
+    details: { category: "Проїзд / Громадський траспорт", description: 'Метро' }
+  },
+  {
+    keywords: ['UBER', 'BOLT', 'WFPTAXI'],
+    details: (keyword) => {
+      const taxiNames = {
+        'UBER': 'Uber',
+        'BOLT': 'Bolt',
+        'WFPTAXI': 'Uklon'
+      };
+      return { category: 'Проїзд / Таксі', description: `Таксі ${taxiNames[keyword]}` };
+    }
+  },
+  {
+    keywords: ['BOOKINGUZGOV', 'UZ.GOV.UA'],
+    details: { category: 'Подорожі / Переїзд', description: 'Квитки на потяг' }
+  },
+  {
+    keywords: ['AVIS PREPAID'],
+    details: { category: 'Подорожі / Автопрокат', description: 'Оренда авто в Avis' }
+  },
+  {
     keywords: ['BILLA', 'SILPO', 'NOVUS', 'LOMONOS MAGAZIN PRODUK', 'LOMONOS PRODUKTOVIY', 'LOTOK', 'VELMART', 'AUCHAN',
       'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket', 'MAGAZINKOLO', 'MEGAMARKET'],
     details: (keyword) => {
@@ -163,29 +186,6 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       };
       return { category: 'Розваги / Кафе ресторани клуби', description: `Вечеря в "${cafeNames[keyword]}"` };
     }
-  },
-  {
-    keywords: ['KYIVSKYI METRO'],
-    details: { category: "Проїзд / Громадський траспорт", description: 'Метро' }
-  },
-  {
-    keywords: ['UBER', 'BOLT', 'WFPTAXI'],
-    details: (keyword) => {
-      const taxiNames = {
-        'UBER': 'Uber',
-        'BOLT': 'Bolt',
-        'WFPTAXI': 'Uklon'
-      };
-      return { category: 'Проїзд / Таксі', description: `Таксі ${taxiNames[keyword]}` };
-    }
-  },
-  {
-    keywords: ['BOOKINGUZGOV', 'UZ.GOV.UA'],
-    details: { category: 'Подорожі / Переїзд', description: 'Квитки на потяг' }
-  },
-  {
-    keywords: ['AVIS PREPAID'],
-    details: { category: 'Подорожі / Автопрокат', description: 'Оренда авто в Avis' }
   },
   {
     keywords: ['EPITSENTR', 'EPICENTR'],

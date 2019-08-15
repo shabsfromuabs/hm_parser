@@ -83,7 +83,7 @@ class HmUploader {
     exportBtn.addEventListener('click', () => {
       this.transactions = Object.keys(this.transactionRows).map((id) => (
         this.getTransactionDetails(id)
-      )).filter((el) => el != null);
+      ));
       console.log(this.transactions);
       this.exportTransaction(0);
     }, false);
@@ -228,10 +228,18 @@ class HmUploader {
   }
 
   exportTransaction(i) {
-    const tr = this.transactions[i];
+    if (i >= this.transactions.length) return;
 
-    if (!tr) return null;
+    const tr = this.transactions[i];
     const { form } = this.transactionRows[i];
+
+    // Ignored transaction
+    if (!tr) {
+      form.classList.remove('error');
+      form.classList.remove('success');
+      this.exportTransaction(i + 1);
+      return;
+    }
     const {
       type,
       date,
