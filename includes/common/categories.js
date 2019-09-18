@@ -129,7 +129,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   },
   {
     keywords: ['BILLA', 'SILPO', 'NOVUS', 'LOMONOS MAGAZIN PRODUK', 'LOMONOS PRODUKTOVIY', 'LOTOK', 'VELMART', 'AUCHAN',
-      'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket', 'MAGAZINKOLO', 'MEGAMARKET'],
+      'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket', 'MAGAZINKOLO', 'MEGAMARKET', 'Spar'],
     details: (keyword) => {
       const shopNames = {
         'BILLA': 'Billa',
@@ -146,7 +146,8 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
         'METRO': 'Metro',
         'SamMarket': 'Сам маркет',
         'MAGAZINKOLO': 'Kolo',
-        'MEGAMARKET': 'Мегамаркеті'
+        'MEGAMARKET': 'Мегамаркеті',
+        'Spar': 'Spar'
       };
       return { category: 'Їжа / Магазини', description: `Продуктии в "${shopNames[keyword]}"` };
     }
@@ -156,12 +157,13 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: "Їжа / Магазини", description: 'Продуктии в магазині' }
   },
   {
-    keywords: ['McDonald', 'KFC', 'AROMAKAVA'],
+    keywords: ['McDonald', 'KFC', 'AROMAKAVA', 'Lviv Kruasan'],
     details: (keyword) => {
       const cafeNames = {
         'McDonald': "McDonald's",
         'KFC': "KFC",
         'AROMAKAVA': "Aroma Kava",
+        'Lviv Kruasan': "Львівські Круасани"
       };
       return { category: 'Їжа / Кафе', description: `Обід в "${cafeNames[keyword]}"` };
     }
