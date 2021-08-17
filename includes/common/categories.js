@@ -1,307 +1,380 @@
-const CATEGORIES = [
-  "Їжа / Кафе",
-  "Їжа / Магазини",
-  "Їжа / Питна вода",
-
-  "Благодійність",
-
-  "Будинок / Дизайн іртер'єру",
-  "Будинок / Оформлення документів",
-  "Будинок / Покупка",
-
-  "Відрядження / Переїзд",
-  "Відрядження / Різне",
-  "Відрядження / Транспорт",
-  "Відрядження / Харчування",
-
-  "Дитина / Великі покупки",
-  "Дитина / Гігієна і косметика",
-  "Дитина / Одяг",
-  "Дитина / Різне",
-  "Дитина / Харчування",
-
-  "Допомога батькам",
-
-  "Доходи / Інвестиції",
-  "Доходи / Кешбек",
-  "Доходи / Подарунки",
-
-  "Зарплата",
-
-  "Зв'язок / Інтернет",
-  "Зв'язок / Мобільний",
-
-  "Здоров'я / Інше",
-  "Здоров'я / Лікарі",
-  "Здоров'я / Ліки",
-  "Здоров'я / Страховка",
-
-  "Квартира / Комуналка",
-  "Квартира / Оренда",
-  "Квартира / Ремонт",
-
-  "Корегування",
-
-  "Краса / Косметика",
-  "Краса / Послуги",
-
-  "Навчання / Мовні курси",
-
-  "Одяг / Аксесуари",
-  "Одяг / Взуття",
-  "Одяг / Одяг",
-  "Одяг / Ремонт",
-
-  "Побут / Меблі",
-  "Побут / Побутова хімія і гігієна",
-  "Побут / Посуд",
-  "Побут / Різне",
-
-  "Подарунки / Друзям і рідним",
-  "Подарунки / Колегам",
-  "Подарунки / Собі",
-
-  "Подорожі / Автопрокат",
-  "Подорожі / Витрати на авто",
-  "Подорожі / Відрядження",
-  "Подорожі / Екскурсії",
-  "Подорожі / Заправка машини",
-  "Подорожі / Переїзд",
-  "Подорожі / Проживання",
-  "Подорожі / Путівки",
-  "Подорожі / Різне",
-  "Подорожі / Сувеніри",
-  "Подорожі / Транспорт",
-  "Подорожі / Харчування",
-
-  "Послуги / Банківські",
-  "Послуги / Державні",
-
-  "Проїзд / Громадський траспорт",
-  "Проїзд / Міжміський",
-  "Проїзд / Таксі",
-
-  "Розваги / Активний відпочинок",
-  "Розваги / Вдома і на природі",
-  "Розваги / Кафе ресторани клуби",
-  "Розваги / Концерти",
-  "Розваги / Кіно",
-  "Розваги / Різне",
-
-  "Спорт / Спорядження",
-  "Спорт / Тренування",
-
-  "Техніка / Електроніка",
-  "Техніка / Побутова",
-
-  "ФОП / Консалтинг",
-  "ФОП / Податки",
-  "ФОП / Суборенда",
-
-  "Цифрові продукти / Ігри",
-  "Цифрові продукти / Музика",
-  "Цифрові продукти / ПЗ"
-];
-
 const CATEGORIES_DESCRIPTION_MATCHES = [
+  // Авто
   {
-    keywords: ['KYIVSKYI METRO'],
-    details: { category: "Проїзд / Громадський траспорт", description: 'Метро' }
+    details: {
+      category: "Авто / Аксесуари",
+      description: "Покупки в Автобазі",
+    },
+    keywords: ["AUTOBAZA"],
   },
   {
-    keywords: ['UBER', 'BOLT', 'WFPTAXI'],
-    details: (keyword) => {
-      const taxiNames = {
-        'UBER': 'Uber',
-        'BOLT': 'Bolt',
-        'WFPTAXI': 'Uklon'
-      };
-      return { category: 'Проїзд / Таксі', description: `Таксі ${taxiNames[keyword]}` };
-    }
+    details: (descriptor) => ({
+      category: "Авто / Заправка",
+      description: `Заправка на "${descriptor}"`,
+    }),
+    keywords: { okko: "Окко", WOG: "Wog", shell: "Shell" },
   },
   {
-    keywords: ['BOOKINGUZGOV', 'UZ.GOV.UA'],
-    details: { category: 'Подорожі / Переїзд', description: 'Квитки на потяг' }
+    details: { category: "Авто / Заправка" },
+    keywords: ["AZS"],
   },
   {
-    keywords: ['AVIS PREPAID'],
-    details: { category: 'Подорожі / Автопрокат', description: 'Оренда авто в Avis' }
+    details: (descriptor) => ({
+      category: "Авто / Парковка",
+      description: `Парковка на ${descriptor}`,
+    }),
+    keywords: {
+      EKSPOTSENTR: "ВДНГ",
+    },
+  },
+  // Будинок
+  {
+    details: {
+      category: "Будинок / Комуналка",
+      description: "Плата за газ",
+    },
+    keywords: ["IPAY.*UTILITI"],
+  },
+  // Доходи
+  {
+    details: (descriptor) => ({
+      category: "Доходи / Кешбек",
+      description: `Кешбек "${descriptor}"`,
+    }),
+    keywords: {
+      "винагороди в рамках акції Cash back": "за Тревел-картою",
+      "Перерахування винагороди згідно транзакції": "Кеш'ю Клаб",
+    },
   },
   {
-    keywords: ['BILLA', 'SILPO', 'NOVUS', 'LOMONOS MAGAZIN PRODUK', 'LOMONOS PRODUKTOVIY', 'LOTOK', 'VELMART', 'AUCHAN',
-      'SHOP ATB', 'SUPERMARKETEKO', 'METRO', 'SamMarket', 'MAGAZINKOLO', 'MEGAMARKET', 'Spar'],
-    details: (keyword) => {
-      const shopNames = {
-        'BILLA': 'Billa',
-        'SILPO': 'Сільпо',
-        'SLPO': 'Сільпо',
-        'NOVUS': 'Novus',
-        'LOMONOS MAGAZIN PRODUK': 'Novus',
-        'LOMONOS PRODUKTOVIY': 'Novus',
-        'LOTOK': 'Лотку',
-        'VELMART': 'Велмарті',
-        'AUCHAN': 'Ашані',
-        'SHOP ATB': 'АТБ',
-        'SUPERMARKETEKO': 'Еко маркет',
-        'METRO': 'Metro',
-        'SamMarket': 'Сам маркет',
-        'MAGAZINKOLO': 'Kolo',
-        'MEGAMARKET': 'Мегамаркеті',
-        'Spar': 'Spar'
-      };
-      return { category: 'Їжа / Магазини', description: `Продуктии в "${shopNames[keyword]}"` };
-    }
+    details: {
+      category: "Доходи / Інвестиції",
+      description: "Проценти за накопичувальним рахунком",
+    },
+    keywords: ["Виплата нарах. відсотків"],
+  },
+  // Зарплата
+  {
+    details: { category: "Зарплата", description: "Зарплата" },
+    keywords: ["ЗАРАХУВАННЯ З/П", "ЗАРАХ.З/П"],
+  },
+  // Зв'язок
+  {
+    details: {
+      category: "Зв'язок / Мобільний",
+      description: "Поповнення мобільного",
+    },
+    keywords: ["EasyPayVodafon"],
+  },
+  // Здоров'я
+  {
+    details: {
+      category: "Здоров'я / Лікарі",
+      description: 'Прийом лікаря в клініці "R+"',
+    },
+    keywords: ["EMAYDI GRU"],
   },
   {
-    keywords: ['RPRODUKTOVIYMAGAZIN', 'MAGAZINMARKET', 'MINI MARKET'],
-    details: { category: "Їжа / Магазини", description: 'Продуктии в магазині' }
+    details: { category: "Здоров'я / Ліки", description: "Аптека" },
+    keywords: ["Apteka"],
+  },
+  // Їжа
+  {
+    details: (descriptor) => ({
+      category: "Їжа / Кафе",
+      description: `Їжа в "${descriptor}"`,
+    }),
+    keywords: {
+      McDonald: "McDonald's",
+      KFC: "KFC",
+      "Ranch.*Steak.*House": "Ranch Steak House",
+      "Lviv.*Kruasan": "Львівські Круасани",
+      "FS.*Gatne": "FS Суші в Мегамаркеті",
+      "SYTYJ.*KUM": "Ситий Кум",
+      pitsasushigori: "Gorilaz Pizza",
+    },
   },
   {
-    keywords: ['McDonald', 'KFC', 'AROMAKAVA', 'Lviv Kruasan'],
-    details: (keyword) => {
-      const cafeNames = {
-        'McDonald': "McDonald's",
-        'KFC': "KFC",
-        'AROMAKAVA': "Aroma Kava",
-        'Lviv Kruasan': "Львівські Круасани"
-      };
-      return { category: 'Їжа / Кафе', description: `Обід в "${cafeNames[keyword]}"` };
-    }
+    details: (descriptor) => ({
+      category: "Їжа / Кафе",
+      description: `Обід на роботі в "${descriptor}"`,
+    }),
+    keywords: {
+      Evrosmak: "Столова на роботі",
+      "CHIPOLLONE.*DANIELE": "Dolce Salato",
+      Dolchesalaterija: "Dolce Salato",
+      DolceSalato: "Dolce Salato",
+      "Cafe.*Dinners": "Cafe Dinners",
+      "KIYEV.+Yizha": "Бургери Yizha",
+      "izha.+KIYEV": "Бургери Yizha",
+    },
   },
   {
-    keywords: ['Evrosmak', 'Dolchesalaterija', 'Cafe Dinners'],
-    details: (keyword) => ({ category: 'Їжа / Кафе', description: `Обід на роботі в "${keyword}"` })
+    details: (descriptor) => ({
+      category: "Їжа / Магазини",
+      description: `Продуктии в "${descriptor}"`,
+    }),
+    keywords: {
+      BILLA: "Billa",
+      SILPO: "Сільпо",
+      SLPO: "Сільпо",
+      Fora: "Фора",
+      NOVUS: "Novus",
+      LOTOK: "Лотку",
+      VELMART: "Велмарті",
+      AUCHAN: "Ашані",
+      "SHOP.*ATB": "АТБ",
+      SUPERMARKETEKO: "Еко маркет",
+      METRO: "Metro",
+      SAMMARKET: "Сам маркет",
+      MAGAZINKOLO: "Kolo",
+      MEGAMARKET: "Мегамаркеті",
+      SPAR: "Spar",
+      "VELYKA.*KYSHENYA": "Велика кишеня",
+    },
   },
   {
-    keywords: ['UA KIYEV Ivana F Yizha', /Yizha.+KIYEV/],
-    details: { category: 'Їжа / Кафе', description: 'Бургери на роботі "під мостом"' }
+    details: {
+      category: "Їжа / Магазини",
+      description: "Продуктии в магазині",
+    },
+    keywords: [
+      "RPRODUKT.*MAGAZIN",
+      "MAGAZIN.*MARKET",
+      "MINI.*MARKET",
+      "EVEREST.*ROMNY",
+    ],
+  },
+  // Краса
+  {
+    details: { category: "Краса / Послуги", description: "Стрижка" },
+    keywords: ["SALONKRASY"],
+  },
+  // Одяг
+  {
+    details: (keyword) => ({
+      category: "Одяг / Взуття",
+      description: `Взятту в "${keyword}"`,
+    }),
+    keywords: ["INTERTOP"],
   },
   {
-    keywords: ['EVRASIYA', 'EVRAZIYAYA', 'PESTO CAFE', 'GENATSVALEIHIN', 'Restoran Mill'],
-    details: (keyword) => {
-      const cafeNames = {
-        'EVRASIYA': 'Євразії',
-        'EVRAZIYAYA': 'Євразії',
-        'PESTO CAFE': 'Pesto Cafe',
-        'GENATSVALEIHIN': 'Геніцвалі і Хінкалі',
-        'Restoran Mill': 'Mill Hub'
-      };
-      return { category: 'Розваги / Кафе ресторани клуби', description: `Вечеря в "${cafeNames[keyword]}"` };
-    }
+    details: (keyword) => ({
+      category: "Одяг / Одяг",
+      description: `Одяг в "${keyword}"`,
+    }),
+    keywords: [
+      "RESERVED",
+      "MOHITO",
+      "CROPP.*TOWN",
+      "HOUSE",
+      "NEW.*YORKER",
+      "ZARA",
+      "BEFREE",
+      "OLKO",
+      "OGGI",
+      "STRADIVARIUS",
+    ],
+  },
+  // Побут
+  {
+    details: (descriptor) => ({
+      category: "Побут / Різне",
+      description: `Покупки в "${descriptor}"`,
+    }),
+    keywords: {
+      EPITSENTR: "Епіцентр",
+      EPICENTR: "Епіцентр",
+      NL3: "Нова Лінія",
+      "NOVA LINIYA": "Нова Лінія",
+      DOMOSVIT: "Домосвіт",
+      JYSK: "JYSK",
+      IKEA: "IKEA",
+    },
+  },
+  // Подорожі
+  {
+    details: {
+      category: "Подорожі / Автопрокат",
+      description: "Оренда авто в Avis",
+    },
+    keywords: ["AVIS"],
   },
   {
-    keywords: ['EPITSENTR', 'EPICENTR'],
-    details: { category: 'Побут / Побутова хімія і гігієна', description: 'Покупки в Епіцентрі' }
+    details: {
+      category: "Подорожі / Переїзд",
+      description: "Квитки на потяг",
+    },
+    keywords: ["BOOKING.*UZ", "UZ.*GOV.*UA"],
+  },
+  // Послуги
+  {
+    details: {
+      category: "Послуги / Державні",
+      description: "Податок на доходи",
+    },
+    keywords: ["Утримання податку"],
   },
   {
-    keywords: ['RESERVED', 'MOHITO', 'CROPPTOWN', 'CROPP TOWN', 'HOUSE', 'NEW YORKER', 'ZARA', 'BEFREE', 'OLKO',
-      'OGGI', 'STRADIVARIUS'],
-    details: (keyword) => ({ category: 'Одяг / Одяг', description: `Одяг в "${keyword}"` })
+    details: { category: "Послуги / Банківські" },
+    keywords: ["Альфа.*Чек", "M.*Banking", "процент.*користування.*кредитом"],
+  },
+  // Проїзд
+  {
+    details: {
+      category: "Проїзд / Громадський траспорт",
+      description: "Метро",
+    },
+    keywords: ["KYIVSKYI.*METRO"],
   },
   {
-    keywords: ['INTERTOP'],
-    details: (keyword) => ({ category: 'Одяг / Взуття', description: `Взятту в "${keyword}"` })
+    details: (descriptor) => ({
+      category: "Проїзд / Таксі",
+      description: `Таксі ${descriptor}`,
+    }),
+    keywords: {
+      UBER: "Uber",
+      BOLT: "Bolt",
+      WFPTAXI: "Uklon",
+      UKLON: "Uklon",
+    },
+  },
+  // Розваги
+  {
+    details: (descriptor) => ({
+      category: "Розваги / Активний відпочинок",
+      description: descriptor,
+    }),
+    keywords: {
+      SuperPark: "Атракціони в SuperPark в Чабанах",
+      KACHELI: "Парк Гойдалок на ВДНГ",
+    },
   },
   {
-    keywords: ['SALONKRASY'],
-    details: { category: 'Краса / Послуги', description: 'Стрижка' }
+    details: (descriptor) => ({
+      category: "Розваги / Кафе ресторани клуби",
+      description: `Вечеря в "${descriptor}"`,
+    }),
+    keywords: {
+      EVRASIYA: "Євразії",
+      EVRAZIYAYA: "Євразії",
+      "PESTO CAFE": "Pesto Cafe",
+      GENATSVALE: "Геніцвалі і Хінкалі",
+      "Restoran Mill": "Mill Hub",
+    },
   },
   {
-    keywords: ['Google Music'],
-    details: { category: 'Цифрові продукти / Музика', description: 'Підписка Google Music' }
+    details: (descriptor) => ({
+      category: "Розваги / Кава",
+      description: `Кава в "${descriptor}"`,
+    }),
+    keywords: {
+      "Aroma.*Kava": "Aroma Kava",
+      Kofein: "Kofein",
+      kavovarka: "Кваоварка",
+    },
   },
+  // Цифрові продукти
   {
-    keywords: ['EMAYDI GRU'],
-    details: { category: "Здоров'я / Лікарі", description: 'Прийом лікаря в клініці "R+"' }
+    details: {
+      category: "Цифрові продукти / Музика",
+      description: "Підписка Google Music",
+    },
+    keywords: ["Google Music"],
   },
-  {
-    keywords: ['ЗАРАХУВАННЯ З/П', 'ЗАРАХ.З/П'],
-    details: { category: 'Зарплата', description: 'Зарплата' }
-  },
-  {
-    keywords: ['Утримання податку'],
-    details: { category: 'Послуги / Державні', description: 'Податок на доходи' }
-  },
-  {
-    keywords: ['Виплата нарах. відсотків'],
-    details: { category: 'Доходи / Інвестиції', description: 'Проценти за накопичувальним рахунком' }
-  },
-  {
-    keywords: ['винагороди в рамках акції Cash back'],
-    details: { category: 'Доходи / Кешбек', description: 'Кешбек за кредиткою' }
-  },
-  {
-    keywords: ['Перерахування винагороди згідно транзакції'],
-    details: { category: 'Доходи / Кешбек', description: 'Кешбек за CashYouClub' }
-  }
 ];
 
 const BANK_CATEGORY_MATCHES = [
   // Urksib
   {
-    bankCategory: 'Продуктові магазини',
-    details: { category: "Їжа / Магазини", description: 'Продуктии в магазині' },
+    bankCategory: "Продуктові магазини",
+    details: {
+      category: "Їжа / Магазини",
+      description: "Продуктии в магазині",
+    },
   },
   {
-    bankCategory: 'Метро',
-    details: { category: 'Проїзд / Громадський траспорт', description: 'Метро' }
+    bankCategory: "Метро",
+    details: {
+      category: "Проїзд / Громадський траспорт",
+      description: "Метро",
+    },
   },
   {
-    bankCategory: 'Кафе та ресторани',
-    details: { category: 'Розваги / Кафе ресторани клуби' }
+    bankCategory: "Кафе та ресторани",
+    details: { category: "Розваги / Кафе ресторани клуби" },
   },
   {
-    bankCategory: 'Аптеки',
-    details: { category: "Здоров'я / Ліки" }
+    bankCategory: "Аптеки",
+    details: { category: "Здоров'я / Ліки" },
   },
   {
-    bankCategory: 'Спортивні товари',
-    details: { category: 'Спорт / Спорядження' }
+    bankCategory: "Спортивні товари",
+    details: { category: "Спорт / Спорядження" },
   },
   {
-    bankCategory: 'Кіно та театри',
-    details: { category: 'Розваги / Кіно' }
+    bankCategory: "Кіно та театри",
+    details: { category: "Розваги / Кіно" },
   },
   {
-    bankCategory: 'Догляд за собою',
-    details: { category: 'Краса / Косметика' }
+    bankCategory: "Догляд за собою",
+    details: { category: "Краса / Косметика" },
   },
   {
-    bankCategory: 'Потяг',
-    details: { category: 'Подорожі / Переїзд' }
+    bankCategory: "Потяг",
+    details: { category: "Подорожі / Переїзд" },
   },
   {
     bankCategory: "Меблі та інтер'єр",
-    details: { category: 'Побут / Різне' }
+    details: { category: "Побут / Різне" },
   },
   {
-    bankCategory: 'Проценти за депозитом',
-    details: { category: 'Доходи / Інвестиції', description: 'Проценти за накопичувальним рахунком' }
-  }
+    bankCategory: "Проценти за депозитом",
+    details: {
+      category: "Доходи / Інвестиції",
+      description: "Проценти за накопичувальним рахунком",
+    },
+  },
 ];
 
-const getCategories = () => CATEGORIES;
-
 const guessByDescription = (description) => {
-  let matchedKeyword;
+  let matchedDescriptor;
+
   const match = CATEGORIES_DESCRIPTION_MATCHES.find((cat) => {
-    return cat.keywords.find((keyword) => {
-      if (description.match(new RegExp(keyword, 'i'))) {
-        matchedKeyword = keyword;
-        return true;
+    const keywords = cat.keywords;
+
+    if (keywords.length) {
+      // array of keywords: ["word1", "word2", /regex3/, /regex4/]
+      return keywords.find((keyword) => {
+        if (description.match(new RegExp(keyword, "i"))) {
+          matchedDescriptor = keyword;
+          return true;
+        }
+      });
+    } else {
+      // Map of keywords: { "keyword1": "desc1", "keyword2": "desc2" }
+      for (const [keyword, desc] of Object.entries(keywords)) {
+        if (description.match(new RegExp(keyword, "i"))) {
+          matchedDescriptor = desc;
+          return true;
+        }
       }
-    });
+    }
   });
+
   if (match) {
-    return typeof match.details === 'function' ? match.details(matchedKeyword, description) : match.details;
+    return typeof match.details === "function"
+      ? match.details(matchedDescriptor, description)
+      : match.details;
   }
 };
 
 const guessByBankCategory = (bankCategory) => {
-  const match = BANK_CATEGORY_MATCHES.find((cat) => cat.bankCategory === bankCategory);
+  const match = BANK_CATEGORY_MATCHES.find(
+    (cat) => cat.bankCategory === bankCategory
+  );
   if (match) return match.details;
 };
 
-const guessTransactionDetails = ({ description, bankCategory }) => (
-  guessByDescription(description) || guessByBankCategory(bankCategory) || {}
-);
+const guessTransactionDetails = ({ description, bankCategory }) =>
+  guessByDescription(description) || guessByBankCategory(bankCategory) || {};

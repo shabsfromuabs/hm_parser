@@ -16,14 +16,21 @@ const parse = (account, rows) => {
       transaction.originalDescription = description;
 
       const transferTransactionDetails = getTransferAssociatedWithTransaction({
-        amount, description, account, spenderName
+        amount,
+        description,
+        account,
+        spenderName,
       });
 
       if (transferTransactionDetails) {
         // This is a transfer transaction
-        transaction.type = 'transfer';
-        transaction.fromAmount = Math.abs(transferTransactionDetails.fromAmount || amount);
-        transaction.toAmount = Math.abs(transferTransactionDetails.toAmount || amount);
+        transaction.type = "transfer";
+        transaction.fromAmount = Math.abs(
+          transferTransactionDetails.fromAmount || amount
+        );
+        transaction.toAmount = Math.abs(
+          transferTransactionDetails.toAmount || amount
+        );
         transaction.description = transferTransactionDetails.description;
         const from = getAccountByName(transferTransactionDetails.from);
         const to = getAccountByName(transferTransactionDetails.to);
@@ -31,25 +38,27 @@ const parse = (account, rows) => {
         transaction.toAccountId = to && to.id;
       } else {
         // This is a regular transaction
-        transaction.type = amount < 0 ? 'expense' : 'income';
+        transaction.type = amount < 0 ? "expense" : "income";
         transaction.amount = amount;
         transaction.accountId = account.id;
-        const { description: descriptionGuess, category: categoryGuess } = guessTransactionDetails({
-          description,
-          bankCategory: getBankProposedCategory(row)
-        });
+        console.log("guessTransactionDetails");
+        const { description: descriptionGuess, category: categoryGuess } =
+          guessTransactionDetails({
+            description,
+            bankCategory: getBankProposedCategory(row),
+          });
         transaction.description = [
           spenderName && `[${spenderName}]`,
-          (descriptionGuess || description)
-        ].join(' ');
+          descriptionGuess || description,
+        ].join(" ");
         transaction.category = categoryGuess;
       }
 
       transactions.push(transaction);
-      markRowWithColor(row, 'rgba(0, 128, 0, 0.2)');
+      markRowWithColor(row, "rgba(0, 128, 0, 0.2)");
     } catch (e) {
       console.warn(row.innerText, e);
-      markRowWithColor(row, 'rgba(255, 0, 0, 0.2)');
+      markRowWithColor(row, "rgba(255, 0, 0, 0.2)");
     }
   }
   console.log(transactions);

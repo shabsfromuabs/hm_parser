@@ -1,11 +1,23 @@
 TRANSACTION_TYPE_CODES = { expense: 'e', income: 'i', transfer: 't' };
 
+const handleApiResponse = ((response) => {
+      if (response.ok) {
+        return response.json().then((data) => {
+          if (data.status === 'success') {
+            return data;
+          } else throw 'User credentials are incorrect';
+        });
+      } else {
+        throw response.statusText || response;
+      }
+    });
+
 const getToken = (email, password) =>
   fetch('/api/user_session', {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       email,
@@ -14,17 +26,33 @@ const getToken = (email, password) =>
       from: 'hm3'
     })
   })
-    .then((response) => {
+  .then(handleApiResponse)
+  .then(data => data.user.authentication_token);
+
+const getCategories = (email, token) => {
+  const uniqAndPresent = (value, index, self) => self.indexOf(value) === index && value;
+
+  return fetch('/api2/transaction/all_json', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'user-email': email,
+        'user-token': token
+      }
+    })
+    .then(((response) => {
       if (response.ok) {
-        return response.json().then((data) => {
-          if (data.status === 'success') {
-            return data.user.authentication_token;
-          } else throw 'User credentials are incorrect';
+        return response.json().then((transactions) => {
+          console.log('transactions');
+          return transactions.map((tr) => tr.category).filter(uniqAndPresent)
         });
       } else {
         throw response.statusText || response;
       }
-    });
+    }));
+}
+
 
 const createTransaction = ({
   token,

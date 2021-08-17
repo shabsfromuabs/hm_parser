@@ -43,8 +43,8 @@ const addAccountsSelect = (target, name, selectedId, className = '') => {
   return addSelectFormGroup(target, options, name, selectedId, className);
 };
 
-const addCategoriesSelect = (target, name, selectedValue, className = '') => {
-  const categories = getCategories();
+const addCategoriesSelect = (target, name, selectedValue, className = '', categories) => {
+  // const categories = getCategories();
   const formGroup = addTextFromGroup(target, name, selectedValue, className);
   const input = formGroup.querySelector('input');
 

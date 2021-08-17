@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "HoneyMoney importer",
   "description": "Export transactions from web-banking and import them into https://app.hmbee.ru",
-  "version": "1.0",
+  "version": "1.102",
   "icons": {
     "16": "images/icons/16.png",
     "48": "images/icons/48.png",
