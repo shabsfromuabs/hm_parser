@@ -131,6 +131,8 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       MEGAMARKET: "Мегамаркеті",
       SPAR: "Spar",
       "VELYKA.*KYSHENYA": "Велика кишеня",
+      "LIQPAY.*FOP.*PASHINSKIJ": "Метро",
+      "LIQPAY.*FOP.*BARABAN": "Метро",
     },
   },
   {
@@ -217,7 +219,12 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   },
   {
     details: { category: "Послуги / Банківські" },
-    keywords: ["Альфа.*Чек", "M.*Banking", "процент.*користування.*кредитом"],
+    keywords: [
+      "Альфа.*Чек",
+      "M.*Banking",
+      "процент.*користування.*кредитом",
+      "комісія.*банк",
+    ],
   },
   // Проїзд
   {
@@ -248,6 +255,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     keywords: {
       SuperPark: "Атракціони в SuperPark в Чабанах",
       KACHELI: "Парк Гойдалок на ВДНГ",
+      "Dobriy.*dub": "Лазалка в Мегамаркеті",
     },
   },
   {

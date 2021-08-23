@@ -14,7 +14,7 @@ const TRANSFER_MATCHERS = [
   {
     matcher: "Зняття готівки в банкоматі",
     transactionInfo: ({ account }) => {
-      userNameMatch = account.name.match(/(Артем|Наталі)/);
+      const userNameMatch = account.name.match(/(Артем|Наталі)/);
 
       return {
         description: "Зняття готівки в банкоматі",
@@ -34,7 +34,7 @@ const TRANSFER_MATCHERS = [
   {
     matcher: "Поповнення Дохідного сейфу",
     transactionInfo: ({ account }) => {
-      userNameMatch = account.name.match(/(Артем|Наталі)/);
+      const userNameMatch = account.name.match(/(Артем|Наталі)/);
 
       return {
         description: "Поповнення Дохідного сейфу",
@@ -46,7 +46,7 @@ const TRANSFER_MATCHERS = [
   {
     matcher: "Зняття коштів з Дохідного сейфу",
     transactionInfo: ({ account }) => {
-      userNameMatch = account.name.match(/(Артем|Наталі)/);
+      const userNameMatch = account.name.match(/(Артем|Наталі)/);
 
       return {
         description: "Зняття з Дохідного сейфу",
@@ -57,7 +57,7 @@ const TRANSFER_MATCHERS = [
   },
   {
     matcher: "Списання переказу коштів з СКР на СКР",
-    transactionInfo: ({ account }) => ({
+    transactionInfo: () => ({
       description: "Переказ на карту Travel",
       from: "Карта Альфа White [Артем]",
       to: "Карта Альфа Travel [Артем]",
@@ -65,11 +65,52 @@ const TRANSFER_MATCHERS = [
   },
   {
     matcher: "Зарахування переказу коштів з СКР на СКР",
-    transactionInfo: ({ account }) => ({
+    transactionInfo: () => ({
       description: "Переказ на карту Travel",
       from: "Карта Альфа White [Артем]",
       to: "Карта Альфа Travel [Артем]",
     }),
+  },
+  {
+    matcher: /Списання коштів для купівлі валюти \d+\.\d+ (USD|EUR)/,
+    transactionInfo: ({ amount, account, description }) => {
+      const userNameMatch = account.name.match(/(Артем|Наталі)/);
+      const descriptionMatch = description.match(
+        /Списання коштів для купівлі валюти (\d+\.\d+) (USD|EUR)/
+      );
+      const amountInCurrency = parseFloat(descriptionMatch[1]);
+      const currency = descriptionMatch[2];
+
+      return {
+        description: `Купівля ${amountInCurrency} ${currency}`,
+        from: account.name,
+        to: `Карта Альфа ${currency} [${userNameMatch[1]}]`,
+        fromAmount: amount,
+        toAmount: amountInCurrency,
+      };
+    },
+  },
+];
+
+const SPECIAL_MATCHERS = [
+  {
+    matcher: "Утримання податку",
+    transactionInfo: ({}) => {
+      return {
+        skipExport: true,
+      };
+    },
+  },
+  {
+    matcher: /Виплата нарах.+відсотків/,
+    transactionInfo: ({ account }) => {
+      const userNameMatch = account.name.match(/(Артем|Наталі)/);
+      const acc = getAccountByName(`Скарбничка Альфа [${userNameMatch[1]}]`);
+
+      return {
+        accountId: acc && acc.id,
+      };
+    },
   },
 ];
 
@@ -121,6 +162,26 @@ const getTransferAssociatedWithTransaction = ({
   return null;
 };
 
+const getSpecialTransactionDetails = ({
+  amount,
+  description,
+  account,
+  spenderName,
+}) => {
+  const specialMatcher = SPECIAL_MATCHERS.find((tm) =>
+    description.match(new RegExp(tm.matcher, "i"))
+  );
+  if (specialMatcher) {
+    return specialMatcher.transactionInfo({
+      amount,
+      description,
+      account,
+      spenderName,
+    });
+  }
+  return null;
+};
+
 const markRowWithColor = (row, color) => {
   row
     .querySelectorAll("td")
@@ -135,7 +196,6 @@ class AlfaParser {
 
     chrome.runtime.onMessage.addListener((request) => {
       if (request.command === "parse") {
-        console.log("parsing");
         chrome.storage.local.set({
           parsedTransactions: parse(
             account,

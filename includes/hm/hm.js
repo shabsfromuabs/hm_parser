@@ -99,6 +99,12 @@ class HmUploader {
 
       this.renderTransactionControls(tr, i);
       this.renderTransactionDetails(tr, i);
+
+      if (tr.skipExport) {
+        // This will turn whole transaction to be unselected
+        form.querySelector("[name=should_export_transaction]").click();
+      }
+
       j++;
     });
   }

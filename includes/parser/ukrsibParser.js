@@ -38,10 +38,12 @@ const TRANSFER_MATCHERS = [
     matcher: /Купівля іноземної валюти в сумі \d+\.\d\dUSD/,
     transactionInfo: ({ amount, account, description }) => {
       const match = description.match(/(\d+\.\d\d)USD по курсу (\d+\.\d\d)/i);
+      const deec = match
+        ? `Купівля валюти онлайн ${match[1]}USD курс ${match[2]}`
+        : description;
+
       return {
-        description: match
-          ? `Купівля валюти онлайн ${match[1]}USD курс ${match[2]}`
-          : description,
+        description: desc,
         from: account.name,
         to: "Карта Укрсиб [Elite] USD",
         fromAmount: amount,
@@ -53,10 +55,12 @@ const TRANSFER_MATCHERS = [
     matcher: /Купівля іноземної валюти в сумі \d+\.\d\dEUR/,
     transactionInfo: ({ amount, account, description }) => {
       const match = description.match(/(\d+\.\d\d)EUR по курсу (\d+\.\d\d)/i);
+      const desc = match
+        ? `Купівля валюти онлайн ${match[1]}EUR курс ${match[2]}`
+        : description;
+
       return {
-        description: match
-          ? `Купівля валюти онлайн ${match[1]}EUR курс ${match[2]}`
-          : description,
+        description: desc,
         from: account.name,
         to: "Карта Укрсиб [Elite] EUR",
         fromAmount: amount,
@@ -65,6 +69,8 @@ const TRANSFER_MATCHERS = [
     },
   },
 ];
+
+const SPECIAL_MATCHERS = [];
 
 const getDate = (row) => {
   const dateStr = row.querySelector(".cell.date .date").innerText;
@@ -126,6 +132,26 @@ const getTransferAssociatedWithTransaction = ({
   return null;
 };
 
+const getSpecialTransactionDetails = ({
+  amount,
+  description,
+  account,
+  spenderName,
+}) => {
+  const specialMatcher = SPECIAL_MATCHERS.find((tm) =>
+    description.match(new RegExp(tm.matcher, "i"))
+  );
+  if (specialMatcher) {
+    return specialMatcher.transactionInfo({
+      amount,
+      description,
+      account,
+      spenderName,
+    });
+  }
+  return null;
+};
+
 const markRowWithColor = (row, color) => (row.style.backgroundColor = color);
 
 class UkrsibParser {
@@ -134,7 +160,6 @@ class UkrsibParser {
 
     chrome.runtime.onMessage.addListener((request) => {
       if (request.command === "parse") {
-        console.log("parsing");
         chrome.storage.local.set({
           parsedTransactions: parse(
             account,

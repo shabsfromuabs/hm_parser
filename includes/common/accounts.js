@@ -15,13 +15,11 @@ const ACCOUNTS = [
   { id: 509015, currency: "usd", name: "ФОП Укрсиб USD" },
 
   { id: 725557, currency: "usd", name: "Карта Укрсиб [Elite] USD" },
-  { id: 725558, currency: "eur", name: "Карта Укрсиб [Elite] [EUR]" },
-  { id: 694162, currency: "eur", name: "Карта Альфа USD [Наталі]" },
-  { id: 694163, currency: "eur", name: "Скарбничка Альфа USD [Наталі]" },
+  { id: 694162, currency: "usd", name: "Карта Альфа USD [Наталі]" },
+  { id: 694163, currency: "usd", name: "Скарбничка Альфа USD [Наталі]" },
   { id: 19409, currency: "uah", name: "Конверт UAH" },
   { id: 19417, currency: "usd", name: "Конверт USD" },
   { id: 734179, currency: "eur", name: "Конверт EUR" },
-  { id: 19408, currency: "uah", name: "Карта Приват [Наталі]" },
 ];
 
 const getAccounts = () => ACCOUNTS;
