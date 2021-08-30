@@ -120,6 +120,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       SLPO: "Сільпо",
       Fora: "Фора",
       NOVUS: "Novus",
+      "KRYUKOVSHCHIN.*MCC": "Novus",
       LOTOK: "Лотку",
       VELMART: "Велмарті",
       AUCHAN: "Ашані",
@@ -193,6 +194,13 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       JYSK: "JYSK",
       IKEA: "IKEA",
     },
+  },
+  {
+    details: {
+      category: "Побут / Інструмент",
+      description: "Інструмент в Дніпро-М",
+    },
+    keywords: ["Dniprom"],
   },
   // Подорожі
   {
@@ -281,6 +289,14 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       Kofein: "Kofein",
       kavovarka: "Кваоварка",
     },
+  },
+  // Техніка
+  {
+    details: {
+      category: "Техніка / Електроніка",
+      description: 'Товари на "Розетка"',
+    },
+    keywords: ["FKKONTRATKOVYJ.*DIM"],
   },
   // Цифрові продукти
   {

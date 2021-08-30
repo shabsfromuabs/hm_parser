@@ -16,6 +16,7 @@ const ACCOUNTS = [
 
   { id: 725557, currency: "usd", name: "Карта Укрсиб [Elite] USD" },
   { id: 694162, currency: "usd", name: "Карта Альфа USD [Наталі]" },
+  { id: 4719129, currency: "eur", name: "Карта Альфа EUR [Артем]" },
   { id: 694163, currency: "usd", name: "Скарбничка Альфа USD [Наталі]" },
   { id: 19409, currency: "uah", name: "Конверт UAH" },
   { id: 19417, currency: "usd", name: "Конверт USD" },
