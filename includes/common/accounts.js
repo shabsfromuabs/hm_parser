@@ -8,8 +8,9 @@ const ACCOUNTS = [
   { id: 651514, currency: "uah", name: "Скарбничка Альфа [Артем]" },
   { id: 651515, currency: "uah", name: "Карта Альфа Travel [Артем]" },
 
-  { id: 520925, currency: "uah", name: "Карта Альфа [Наталі]" },
+  { id: 520925, currency: "uah", name: "Карта Альфа White [Наталі]" },
   { id: 632090, currency: "uah", name: "Скарбничка Альфа [Наталі]" },
+  { id: 5600774, currency: "uah", name: "Карта Альфа Travel [Наталі]" },
 
   { id: 509014, currency: "uah", name: "ФОП Укрсиб UAH" },
   { id: 509015, currency: "usd", name: "ФОП Укрсиб USD" },

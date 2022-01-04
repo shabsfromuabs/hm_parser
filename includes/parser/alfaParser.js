@@ -3,10 +3,10 @@ const detectCurrentAccount = (cardNumber) => {
     return getAccountByName("Карта Альфа White [Артем]");
   else if (cardNumber === "4102xxxxxxx4587")
     return getAccountByName("Карта Альфа Travel [Артем]");
-  else if (cardNumber === "5355xxxxxxx7060")
-    return getAccountByName("Карта Альфа Credit [Артем]");
   else if (cardNumber === "4102xxxxxxx7527")
-    return getAccountByName("Карта Альфа [Наталі]");
+    return getAccountByName("Карта Альфа White [Наталі]");
+  else if (cardNumber === "4102xxxxxxx7846")
+    return getAccountByName("Карта Альфа Travel [Наталі]");
   return null;
 };
 
@@ -57,19 +57,27 @@ const TRANSFER_MATCHERS = [
   },
   {
     matcher: "Списання переказу коштів з СКР на СКР",
-    transactionInfo: () => ({
-      description: "Переказ на карту Travel",
-      from: "Карта Альфа White [Артем]",
-      to: "Карта Альфа Travel [Артем]",
-    }),
+    transactionInfo: ({ account }) => {
+      const userNameMatch = account.name.match(/(Артем|Наталі)/);
+
+      return {
+        description: "Переказ на карту Travel",
+        from: `Карта Альфа White [${userNameMatch[1]}]`,
+        to: `Карта Альфа Travel [${userNameMatch[1]}]`,
+      };
+    },
   },
   {
     matcher: "Зарахування переказу коштів з СКР на СКР",
-    transactionInfo: () => ({
-      description: "Переказ на карту Travel",
-      from: "Карта Альфа White [Артем]",
-      to: "Карта Альфа Travel [Артем]",
-    }),
+    transactionInfo: ({ account }) => {
+      const userNameMatch = account.name.match(/(Артем|Наталі)/);
+
+      return {
+        description: "Переказ на карту Travel",
+        from: `Карта Альфа White [${userNameMatch[1]}]`,
+        to: `Карта Альфа Travel [${userNameMatch[1]}]`,
+      };
+    },
   },
   {
     matcher: /Списання коштів для купівлі валюти \d+\.\d+ (USD|EUR)/,
