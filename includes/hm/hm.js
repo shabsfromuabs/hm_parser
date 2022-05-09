@@ -311,9 +311,9 @@ class HmUploader {
     const formData = new FormData(form);
     const date = formData.get("transaction_date");
     const type = typeOverride || formData.get("transaction_type");
-    const amount = formData.get("transaction_amount");
-    const fromAmount = formData.get("transaction_amount_from");
-    const toAmount = formData.get("transaction_amount_to");
+    const amount = formData.get("transaction_amount").replace(',', '.');
+    const fromAmount = formData.get("transaction_amount_from").replace(',', '.');
+    const toAmount = formData.get("transaction_amount_to").replace(',', '.');
     const accountId = formData.get("transaction_account");
     const fromAccountId = formData.get("transaction_account_from");
     const toAccountId = formData.get("transaction_account_to");

@@ -7,6 +7,10 @@ const detectCurrentAccount = (cardNumber) => {
     return getAccountByName("Карта Альфа White [Наталі]");
   else if (cardNumber === "4102xxxxxxx7846")
     return getAccountByName("Карта Альфа Travel [Наталі]");
+  else if (cardNumber === "4102xxxxxxx4728")
+    return getAccountByName("Карта Альфа EUR [Артем]");
+  else if (cardNumber === "4102xxxxxxx8842")
+    return getAccountByName("Карта Альфа USD [Наталі]");
   return null;
 };
 

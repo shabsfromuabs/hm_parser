@@ -134,6 +134,9 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "VELYKA.*KYSHENYA": "Велика кишеня",
       "LIQPAY.*FOP.*PASHINSKIJ": "Метро",
       "LIQPAY.*FOP.*BARABAN": "Метро",
+      "PINGO DOCE": "Pingo Doce",
+      "LIDL": "Lidl",
+      "CONTINENTE": "Continente"
     },
   },
   {
@@ -241,6 +244,13 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       description: "Метро",
     },
     keywords: ["KYIVSKYI.*METRO"],
+  },
+  {
+    details: {
+      category: "Проїзд / Громадський траспорт",
+      description: "Транспортна карта Лісабон",
+    },
+    keywords: ["SOFLUSA.*SA"],
   },
   {
     details: (descriptor) => ({
