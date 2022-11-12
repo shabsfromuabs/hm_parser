@@ -1,11 +1,11 @@
-const parse = (account, rows) => {
+const parse = async (account, rows) => {
   const transactions = [];
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
 
     try {
-      const transaction = getTransactionFromRow(account, row);
+      const transaction = await getTransactionFromRow(account, row);
       transactions.push(transaction);
       markRowWithColor(row, "rgba(0, 128, 0, 0.2)");
     } catch (e) {
@@ -23,6 +23,7 @@ const getTransferAssociatedWithTransaction = ({
   description,
   account,
   spenderName,
+  currencyAmountStr,
 }) => {
   const transferMatcher = TRANSFER_MATCHERS.find((tm) =>
     description.match(new RegExp(tm.matcher, "i"))
@@ -33,6 +34,7 @@ const getTransferAssociatedWithTransaction = ({
       description,
       account,
       spenderName,
+      currencyAmountStr,
     });
   }
   return null;
@@ -43,6 +45,7 @@ const getSpecialTransactionDetails = ({
   description,
   account,
   spenderName,
+  currencyAmountStr,
 }) => {
   const specialMatcher = SPECIAL_MATCHERS.find((tm) =>
     description.match(new RegExp(tm.matcher, "i"))
@@ -53,23 +56,26 @@ const getSpecialTransactionDetails = ({
       description,
       account,
       spenderName,
+      currencyAmountStr,
     });
   }
   return null;
 };
 
-const getTransactionFromRow = (account, row) => {
+const getTransactionFromRow = async (account, row) => {
   // Convert date to integer for further saving in chrome extension store
-  const date = getDate(row).getTime();
-  const amount = getAmount(row);
-  const description = getDescription(row);
-  const spenderName = getSpenderName(row);
+  const [date, amount, description, spenderName, currencyAmount, currencyName] =
+    await getBasicTransactionDetails(row);
+
+  const currencyAmountStr =
+    currencyAmount && `(${currencyAmount} ${currencyName})`;
 
   const transferTransactionDetails = getTransferAssociatedWithTransaction({
     amount,
     description,
     account,
     spenderName,
+    currencyAmountStr,
   });
 
   if (transferTransactionDetails) {
@@ -94,6 +100,7 @@ const getTransactionFromRow = (account, row) => {
     description,
     account,
     spenderName,
+    currencyAmountStr,
   });
 
   const { description: descriptionGuess, category: categoryGuess } =
@@ -104,8 +111,11 @@ const getTransactionFromRow = (account, row) => {
 
   const finialDescription = [
     spenderName && `[${spenderName}]`,
+    currencyAmountStr && currencyAmountStr,
     descriptionGuess || description,
-  ].join(" ");
+  ]
+    .filter((v) => v)
+    .join(" ");
 
   const transaction = {
     accountId: account.id,

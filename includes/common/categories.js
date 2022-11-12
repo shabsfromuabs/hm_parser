@@ -159,6 +159,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "CONTINENTE": "Continente",
       "Zabka": "Zabka",
       "Biedronka": "Biedronka",
+      "JMP s.a. biedr": "Biedronka",
     },
   },
   {

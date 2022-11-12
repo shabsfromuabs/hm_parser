@@ -28,7 +28,7 @@ const TRANSFER_MATCHERS = [
         fromAmount: undefined,
         toAmount: amount,
       };
-    }
+    },
   },
   {
     matcher: /На Ваш баланс \w{3}/i,
@@ -42,11 +42,19 @@ const TRANSFER_MATCHERS = [
         fromAmount: amount,
         toAmount: undefined,
       };
-    }
+    },
   },
 ];
 
 const SPECIAL_MATCHERS = [];
+
+const getBasicTransactionDetails = async (row) => {
+  const date = getDate(row).getTime();
+  const amount = getAmount(row);
+  const description = getDescription(row);
+
+  return [date, amount, description];
+};
 
 const getDate = (row) => {
   const dateStr = row.parentElement.previousElementSibling.innerText;
@@ -84,8 +92,6 @@ const getBankProposedCategory = (row) => {
     .replace("-icon", "");
 };
 
-const getSpenderName = () => {};
-
 const markRowWithColor = (row, color) => (row.style.backgroundColor = color);
 
 class WiseParser {
@@ -93,16 +99,15 @@ class WiseParser {
     const wiseAccountId = window.location.pathname.replace("/balances/", "");
     const currency = WISE_ACCOUNTS[wiseAccountId];
     const account = getAccountByName(`Wise ${currency}`);
-    const rows = document.querySelectorAll(
-      '#main .m-y-3 h3+div a[data-testid="activity-summary"]'
-    );
 
-    chrome.runtime.onMessage.addListener((request) => {
+    chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
-        chrome.storage.local.set({
-          parsedTransactions: parse(account, rows),
-          account,
-        });
+        const rows = document.querySelectorAll(
+          '#main .m-y-3 h3+div a[data-testid="activity-summary"]'
+        );
+        
+        const parsedTransactions = await parse(account, rows);
+        chrome.storage.local.set({ parsedTransactions, account });
       }
     });
   }

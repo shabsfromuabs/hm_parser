@@ -126,6 +126,14 @@ const SPECIAL_MATCHERS = [
   },
 ];
 
+const getBasicTransactionDetails = async (row) => {
+  const date = getDate(row).getTime();
+  const amount = getAmount(row);
+  const description = getDescription(row);
+
+  return [date, amount, description];
+};
+
 const getDate = (row) => {
   const dateStr = row.querySelector("td.column-1").innerText;
   const [dayStr, monthStr, yearStr] = dateStr.split(".");
@@ -152,8 +160,6 @@ const getDescription = (row) => {
 
 const getBankProposedCategory = () => {};
 
-const getSpenderName = () => {};
-
 const markRowWithColor = (row, color) => {
   row
     .querySelectorAll("td")
@@ -166,15 +172,14 @@ class AlfaParser {
     const account = detectCurrentAccount(cardName);
     if (!account) alert("Can't detect account");
 
-    chrome.runtime.onMessage.addListener((request) => {
+    chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
-        chrome.storage.local.set({
-          parsedTransactions: parse(
-            account,
-            document.querySelectorAll("table.x-acct-operations tbody tr")
-          ),
-          account,
-        });
+        const rows = document.querySelectorAll(
+          "table.x-acct-operations tbody tr"
+        );
+        
+        const parsedTransactions = await parse(account, rows);
+        chrome.storage.local.set({ parsedTransactions, account });
       }
     });
   }

@@ -58,10 +58,11 @@ class HmUploader {
           alert(`Unable to get token: ${e.message || e}`);
         });
     });
-  }
+  } 
 
   setTransactions() {
     chrome.storage.local.get("parsedTransactions", (result) => {
+      console.log('parsedTransactions', result.parsedTransactions);
       this.transactions = sortBy(result.parsedTransactions, "date");
       console.log("transactions", this.transactions);
       this.renderTransactions();

@@ -1,5 +1,5 @@
 // Last 4 digits of the card ro each spender
-const SPENDERS = { 3666: "Артем", 8816: "Наталі" };
+const SPENDERS = { 3666: "Артем" };
 
 const TRANSFER_MATCHERS = [
   {
@@ -72,6 +72,45 @@ const TRANSFER_MATCHERS = [
 
 const SPECIAL_MATCHERS = [];
 
+const getBasicTransactionDetails = async (row) => {
+  const currency = row.querySelector(".cell.amount .currency").innerText;
+
+  // Open modal with details if currency conversion has been applied
+  if (currency !== "грн") {
+    row.click();
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const date = getDate(row).getTime();
+        const amountInTransactionCurrency = getAmount(row);
+        const isExpence = amountInTransactionCurrency < 0;
+        const amountInAccountCurrency = getAmountInAccountCurrency(isExpence);
+        const description = getDescription(row);
+        const spenderName = getSpenderName(row);
+
+        // Close modal
+        document.querySelector(".modal-window-close").click();
+
+        return resolve([
+          date,
+          amountInAccountCurrency,
+          description,
+          spenderName,
+          amountInTransactionCurrency,
+          currency,
+        ]);
+      }, 1000);
+    });
+  }
+
+  const date = getDate(row).getTime();
+  const amount = getAmount(row);
+  const description = getDescription(row);
+  const spenderName = getSpenderName(row);
+
+  return [date, amount, description, spenderName];
+};
+
 const getDate = (row) => {
   const dateStr = row.querySelector(".cell.date .date").innerText;
   const [dayStr, monthStr, yearStr] = dateStr.split(".");
@@ -79,12 +118,26 @@ const getDate = (row) => {
 };
 
 const getAmount = (row) => {
+  // NOTE: this will be with "minus" sign in UI for expenses
   const amountStr = row
     .querySelector(".cell.amount .sum")
     .innerText.replace(/\s/g, "")
     .replace(",", ".");
-  // NOTE: Expense should be negative numbers in HM, so keep "minus" sign
+
+  // Expense should be negative numbers in HM, so keep "minus" sign
   return parseFloat(amountStr);
+};
+
+const getAmountInAccountCurrency = (isExpence) => {
+  // NOTE: Ussually this will be WITHOUT "minus" sign in UI for expenses
+  const baseCurrencyAmountStr = document
+    .querySelector(".modal-window .formRow.postAmount .sum")
+    .innerText.replace(/\s/g, "")
+    .replace(",", ".");
+
+  const baseCurrencyAmount = Math.abs(parseFloat(baseCurrencyAmountStr));
+  // Make sure we add "minus" sign for expenses
+  return isExpence ? baseCurrencyAmount * -1 : baseCurrencyAmount;
 };
 
 const getDescription = (row) => {
@@ -118,15 +171,12 @@ class UkrsibParser {
   constructor() {
     const account = getAccountByName("Карта Укрсиб [Elite]");
 
-    chrome.runtime.onMessage.addListener((request) => {
+    chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
-        chrome.storage.local.set({
-          parsedTransactions: parse(
-            account,
-            document.querySelectorAll(".data .transactionItemPanel")
-          ),
-          account,
-        });
+        const rows = document.querySelectorAll(".data .transactionItemPanel");
+
+        const parsedTransactions = await parse(account, rows);
+        chrome.storage.local.set({ parsedTransactions, account });
       }
     });
   }
