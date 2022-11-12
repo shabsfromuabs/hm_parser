@@ -12,6 +12,9 @@ chrome.runtime.onInstalled.addListener(function () {
           pageUrl: { hostPrefix: 'my.alfabank.com.ua' },
         }),
         new chrome.declarativeContent.PageStateMatcher({
+          pageUrl: { hostPrefix: 'wise.com' },
+        }),
+        new chrome.declarativeContent.PageStateMatcher({
           pageUrl: { hostPrefix: 'app.hmbee.ru' },
         })
       ],

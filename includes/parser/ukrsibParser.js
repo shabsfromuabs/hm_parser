@@ -112,46 +112,6 @@ const getSpenderName = (row) => {
   return "";
 };
 
-const getTransferAssociatedWithTransaction = ({
-  amount,
-  description,
-  account,
-  spenderName,
-}) => {
-  const transferMatcher = TRANSFER_MATCHERS.find((tm) =>
-    description.match(new RegExp(tm.matcher, "i"))
-  );
-  if (transferMatcher) {
-    return transferMatcher.transactionInfo({
-      amount,
-      description,
-      account,
-      spenderName,
-    });
-  }
-  return null;
-};
-
-const getSpecialTransactionDetails = ({
-  amount,
-  description,
-  account,
-  spenderName,
-}) => {
-  const specialMatcher = SPECIAL_MATCHERS.find((tm) =>
-    description.match(new RegExp(tm.matcher, "i"))
-  );
-  if (specialMatcher) {
-    return specialMatcher.transactionInfo({
-      amount,
-      description,
-      account,
-      spenderName,
-    });
-  }
-  return null;
-};
-
 const markRowWithColor = (row, color) => (row.style.backgroundColor = color);
 
 class UkrsibParser {

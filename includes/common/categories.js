@@ -21,10 +21,11 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   {
     details: (descriptor) => ({
       category: "Авто / Парковка",
-      description: `Парковка на ${descriptor}`,
+      description: `Парковка ${descriptor}`,
     }),
     keywords: {
       EKSPOTSENTR: "ВДНГ",
+      "Interparking Polska": "Польща"
     },
   },
   // Будинок
@@ -34,6 +35,23 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       description: "Плата за газ",
     },
     keywords: ["IPAY.*UTILITI"],
+  },
+  // Дитина
+  {
+    details: (keyword) => ({
+      category: "Дитина / Одяг",
+      description: `Одяг в "${keyword}"`,
+    }),
+    keywords: [
+      "Pepco",
+    ],
+  },
+  {
+    details: (keyword) => ({
+      category: "Дитина / Розваги",
+      description: "Дитяча кімната",
+    }),
+    keywords: ["Fun Park"]
   },
   // Доходи
   {
@@ -92,6 +110,8 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "FS.*Gatne": "FS Суші в Мегамаркеті",
       "SYTYJ.*KUM": "Ситий Кум",
       pitsasushigori: "Gorilaz Pizza",
+      "Lepione": "Lepione",
+      "Bk Gdynia Rivier": "Burger King",
     },
   },
   {
@@ -136,7 +156,9 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "LIQPAY.*FOP.*BARABAN": "Метро",
       "PINGO DOCE": "Pingo Doce",
       "LIDL": "Lidl",
-      "CONTINENTE": "Continente"
+      "CONTINENTE": "Continente",
+      "Zabka": "Zabka",
+      "Biedronka": "Biedronka",
     },
   },
   {
@@ -218,7 +240,16 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       category: "Подорожі / Переїзд",
       description: "Квитки на потяг",
     },
-    keywords: ["BOOKING.*UZ", "UZ.*GOV.*UA"],
+    keywords: ["BOOKING.*UZ", "UZ.*GOV.*UA", "bilet.intercity"],
+  },
+  {
+    details: (keyword) => ({
+      category: "Подорожі / Речі для подорожей",
+      description: `Покупки в "${keyword}"`,
+    }),
+    keywords: [
+      "Decathlon",
+    ],
   },
   // Послуги
   {
@@ -368,6 +399,35 @@ const BANK_CATEGORY_MATCHES = [
       category: "Доходи / Інвестиції",
       description: "Проценти за накопичувальним рахунком",
     },
+  },
+  // Wise
+  {
+    bankCategory: "eating-out",
+    details: { category: "Їжа / Кафе" },
+  },
+  {
+    bankCategory: "groceries",
+    details: { category: "Їжа / Магазини" },
+  },
+  {
+    bankCategory: "entertainment",
+    details: { category: "Розваги / Різне" },
+  },
+  {
+    bankCategory: "transport",
+    details: { category: "Проїзд / Громадський траспорт" },
+  },
+  {
+    bankCategory: "holidays",
+    details: { category: "Подорожі / Проживання" },
+  },
+  {
+    bankCategory: "personal-care",
+    details: { category: "Побут / Побутова хімія і гігієна" },
+  },
+  {
+    bankCategory: "bills",
+    details: { category: "Квартира / Комуналка" },
   },
 ];
 
