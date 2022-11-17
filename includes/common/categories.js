@@ -47,11 +47,18 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     ],
   },
   {
-    details: (keyword) => ({
+    details: {
       category: "Дитина / Розваги",
       description: "Дитяча кімната",
-    }),
+    },
     keywords: ["Fun Park"]
+  },
+  {
+    details: {
+      category: "Дитина / Розваги",
+      description: "Батути Jump city",
+    },
+    keywords: ["Jc Sp Zoo"]
   },
   // Доходи
   {
