@@ -51,7 +51,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       category: "Дитина / Розваги",
       description: "Дитяча кімната",
     },
-    keywords: ["Fun Park"]
+    keywords: ["Fun Park", "Loopys World"]
   },
   {
     details: {
@@ -89,7 +89,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       category: "Зв'язок / Мобільний",
       description: "Поповнення мобільного",
     },
-    keywords: ["EasyPayVodafon"],
+    keywords: ["EasyPayVodafon", "t-Mobile"],
   },
   // Здоров'я
   {

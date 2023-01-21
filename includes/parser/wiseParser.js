@@ -81,7 +81,7 @@ const getAmount = (row) => {
 };
 
 const getDescription = (row) => {
-  return row.querySelector("h5").innerText;
+  return row.querySelector("p").innerText;
 };
 
 const getBankProposedCategory = (row) => {
@@ -103,7 +103,7 @@ class WiseParser {
     chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
         const rows = document.querySelectorAll(
-          '#main .m-y-3 h3+div a[data-testid="activity-summary"]'
+          '#main a[data-testid="activity-summary"]'
         );
         
         const parsedTransactions = await parse(account, rows);
