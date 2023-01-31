@@ -167,6 +167,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "Zabka": "Zabka",
       "Biedronka": "Biedronka",
       "JMP s.a. biedr": "Biedronka",
+      "Express Afro-Indian": "Carefour"
     },
   },
   {

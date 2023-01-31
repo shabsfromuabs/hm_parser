@@ -1,6 +1,6 @@
 const WISE_ACCOUNTS = { 32828969: "USD", 33761471: "EUR", 37329507: "PLN" };
 
-const MOTHS_NAMES = [
+const UA_MOTHS_NAMES = [
   "січ",
   "лют",
   "бер",
@@ -13,6 +13,21 @@ const MOTHS_NAMES = [
   "жов",
   "лис",
   "гру",
+];
+
+const EN_MOTHS_NAMES = [
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "may",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "oct",
+  "nov",
+  "dec",
 ];
 
 const TRANSFER_MATCHERS = [
@@ -60,15 +75,24 @@ const getDate = (row) => {
   const dateStr = row.parentElement.previousElementSibling.innerText;
   const now = new Date();
 
-  if (dateStr === "Сьогодні") {
+  if (dateStr === "Сьогодні" || dateStr === "Today") {
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  } else if (dateStr === "Учора") {
+  } else if (dateStr === "Учора" || dateStr === "Yesterday") {
     return new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
   } else {
-    const [date, month] = dateStr.split(" ");
-    const shortMonth = month.substring(0, 3);
-    const monthNumber = MOTHS_NAMES.findIndex((e) => e === shortMonth);
-    return new Date(now.getFullYear(), monthNumber, parseInt(date));
+    const [date, month, yearStr] = dateStr.split(" ");
+    const year = yearStr ? parseInt(yearStr) : now.getFullYear();
+    const shortMonth = month.substring(0, 3).toLowerCase();
+    let monthNumber = UA_MOTHS_NAMES.findIndex((e) => e === shortMonth);
+    
+    if (monthNumber < 0) {
+      monthNumber = EN_MOTHS_NAMES.findIndex((e) => e === shortMonth);
+    }
+    if (monthNumber < 0) {
+      throw "Can't parse month name"
+    }
+
+    return new Date(year, monthNumber, parseInt(date));
   }
 };
 
