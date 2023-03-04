@@ -15,6 +15,9 @@ chrome.runtime.onInstalled.addListener(function () {
           pageUrl: { hostPrefix: 'wise.com' },
         }),
         new chrome.declarativeContent.PageStateMatcher({
+          pageUrl: { hostPrefix: 'www.bankmillennium.pl' },
+        }),
+        new chrome.declarativeContent.PageStateMatcher({
           pageUrl: { hostPrefix: 'app.hmbee.ru' },
         })
       ],

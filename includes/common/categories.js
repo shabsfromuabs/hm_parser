@@ -165,9 +165,11 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "LIDL": "Lidl",
       "CONTINENTE": "Continente",
       "Zabka": "Zabka",
+      "Zappka": "Zabka",
       "Biedronka": "Biedronka",
       "JMP s.a. biedr": "Biedronka",
-      "Express Afro-Indian": "Carefour"
+      "Express Afro-Indian": "Carefour",
+      "Sklep Arkadiusz": "Leviatan"
     },
   },
   {
@@ -267,6 +269,13 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       description: "Податок на доходи",
     },
     keywords: ["Утримання податку"],
+  },
+  {
+    details: {
+      category: "Послуги / Банківські",
+      description: "Комісія за зарахування ЗП",
+    },
+    keywords: ["PRZELEW.*ZAGRANICZNY"],
   },
   {
     details: { category: "Послуги / Банківські" },
