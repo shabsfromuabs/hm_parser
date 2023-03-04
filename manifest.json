@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "HoneyMoney importer",
   "description": "Export transactions from web-banking and import them into https://app.hmbee.ru",
   "version": "1.102",
@@ -9,10 +9,9 @@
     "128": "images/icons/128.png"
   },
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
-  "page_action": {
+  "action": {
     "default_icon": "images/button.png",
     "default_popup": "popup/popup.html"
   },
@@ -21,7 +20,10 @@
     "storage",
     "activeTab",
     "tabs",
-    "https://hmbee.ru/"
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://hmbee.ru/*"
   ],
   "offline_enabled": false,
   "minimum_chrome_version": "45.0.2454.85"
