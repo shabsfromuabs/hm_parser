@@ -6,6 +6,8 @@ class Popup {
     this.credentialsForm = document.querySelector("#credentials-form");
     this.setUiElements();
     this.addEventListeners();
+
+    this.handleOtodom();
   }
 
   async getCurrentTab() {
@@ -25,6 +27,12 @@ class Popup {
       this.openHmButton.classList.add("d-none");
       this.credentialsForm.classList.remove("d-none");
       this.loadCredentials();
+    }
+
+    if (currentTab.url?.startsWith("https://www.otodom.pl")) {
+      this.initializeButton.classList.add("d-none");
+      this.parseButton.classList.add("d-none");
+      this.openHmButton.classList.add("d-none");
     }
   }
 
@@ -113,6 +121,28 @@ class Popup {
       chrome.scripting.executeScript({ target, files });
       // Add styling
       chrome.scripting.insertCSS({ target, files: ["includes/hm/styles.css"] });
+    } else if (currentTab.url?.startsWith("https://www.otodom.pl")) {
+      const files = [
+        "includes/hm/uiHelpers.js",
+        "includes/hm/helpers.js",
+        "includes/otodom/otodom.js",
+      ];
+      chrome.scripting.executeScript({ target, files });
+    }
+  }
+
+  async handleOtodom() {
+    const currentTab = await this.getCurrentTab();
+    const target = { tabId: currentTab.id };
+
+    chrome.scripting.executeScript({
+      target,
+      files: ["includes/common/helpers.js"],
+    });
+
+    if (currentTab.url?.startsWith("https://www.otodom.pl")) {
+      const files = ["includes/otodom/otodom.js"];
+      chrome.scripting.executeScript({ target, files });
     }
   }
 }
