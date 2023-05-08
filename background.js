@@ -19,6 +19,9 @@ chrome.runtime.onInstalled.addListener(function () {
         }),
         new chrome.declarativeContent.PageStateMatcher({
           pageUrl: { hostPrefix: 'app.hmbee.ru' },
+        }),
+        new chrome.declarativeContent.PageStateMatcher({
+          pageUrl: { hostPrefix: 'www.otodom.pl' },
         })
       ],
       actions: [new chrome.declarativeContent.ShowPageAction()]

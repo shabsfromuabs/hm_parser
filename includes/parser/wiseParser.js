@@ -112,8 +112,8 @@ const getBankProposedCategory = (row) => {
   return row
     .querySelector('[role="img"]')
     .querySelector("[data-testid]")
-    .getAttribute("data-testid")
-    .replace("-icon", "");
+    ?.getAttribute("data-testid")
+    ?.replace("-icon", "");
 };
 
 const markRowWithColor = (row, color) => (row.style.backgroundColor = color);

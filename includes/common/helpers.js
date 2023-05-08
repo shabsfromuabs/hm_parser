@@ -1,4 +1,4 @@
-const appendHtmlElement = (name, target, className = '', props = {}, styles = {}) => {
+function appendHtmlElement(name, target, className = '', props = {}, styles = {}) {
   const element = document.createElement(name);
   element.className = className;
   Object.entries(props).forEach((prop) => {
@@ -11,7 +11,7 @@ const appendHtmlElement = (name, target, className = '', props = {}, styles = {}
   return element;
 };
 
-const sortBy = (obj, key) => {
+function sortBy(obj, key) {
   return obj.sort((a, b) => {
     if(a[key] < b[key]) return -1;
     if(a[key] > b[key]) return 1;
@@ -19,6 +19,6 @@ const sortBy = (obj, key) => {
   });
 };
 
-const capitalize = (str) => str.substring(0, 1).toUpperCase() + str.substring(1);
+function capitalize(str) { return str.substring(0, 1).toUpperCase() + str.substring(1) };
 
-const zeroPaddedNumber = (int) => (int < 10 ? `0${int}` : int.toString());
+function zeroPaddedNumber(int) { return (int < 10 ? `0${int}` : int.toString()) };

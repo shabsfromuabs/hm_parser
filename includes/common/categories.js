@@ -25,7 +25,8 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     }),
     keywords: {
       EKSPOTSENTR: "ВДНГ",
-      "Interparking Polska": "Польща"
+      "Interparking Polska": "Польща",
+      "EUROPARK": "Польща",
     },
   },
   // Будинок
@@ -42,23 +43,21 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       category: "Дитина / Одяг",
       description: `Одяг в "${keyword}"`,
     }),
-    keywords: [
-      "Pepco",
-    ],
+    keywords: ["Pepco"],
   },
   {
     details: {
       category: "Дитина / Розваги",
       description: "Дитяча кімната",
     },
-    keywords: ["Fun Park", "Loopys World"]
+    keywords: ["Fun Park", "Loopys World"],
   },
   {
     details: {
       category: "Дитина / Розваги",
       description: "Батути Jump city",
     },
-    keywords: ["Jc Sp Zoo"]
+    keywords: ["Jc Sp Zoo"],
   },
   // Доходи
   {
@@ -93,11 +92,14 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   },
   // Здоров'я
   {
-    details: {
+    details: (descriptor) => ({
       category: "Здоров'я / Лікарі",
-      description: 'Прийом лікаря в клініці "R+"',
+      description: `Прийом лікаря в клініці ${descriptor}`,
+    }),
+    keywords: {
+      "EMAYDI GRU": "R+",
+      "LUX MED": "LUX MED",
     },
-    keywords: ["EMAYDI GRU"],
   },
   {
     details: { category: "Здоров'я / Ліки", description: "Аптека" },
@@ -117,9 +119,20 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "FS.*Gatne": "FS Суші в Мегамаркеті",
       "SYTYJ.*KUM": "Ситий Кум",
       pitsasushigori: "Gorilaz Pizza",
-      "Lepione": "Lepione",
+      Lepione: "Lepione",
       "Bk Gdynia Rivier": "Burger King",
+      "Berlin Doner": "Berlin Doner Kebap",
+      "SUSHI WORLD GDYNIA": "SUSHI WORLD GDYNIA",
     },
+  },
+  {
+    details: (descriptor) => ({
+      category: "Їжа / Кафе",
+      description: `Доставка з "${descriptor}"`,
+    }),
+    keywords: {
+      Glovo: "Glovo",
+    }
   },
   {
     details: (descriptor) => ({
@@ -162,14 +175,16 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "LIQPAY.*FOP.*PASHINSKIJ": "Метро",
       "LIQPAY.*FOP.*BARABAN": "Метро",
       "PINGO DOCE": "Pingo Doce",
-      "LIDL": "Lidl",
-      "CONTINENTE": "Continente",
-      "Zabka": "Zabka",
-      "Zappka": "Zabka",
-      "Biedronka": "Biedronka",
+      LIDL: "Lidl",
+      CONTINENTE: "Continente",
+      Zabka: "Zabka",
+      Zappka: "Zabka",
+      Biedronka: "Biedronka",
       "JMP s.a. biedr": "Biedronka",
       "Express Afro-Indian": "Carefour",
-      "Sklep Arkadiusz": "Leviatan"
+      "Sklep Arkadiusz": "Leviatan",
+      "PRZYSTANEK ZDROWIE": "Przystanek Zdrowie",
+      "CARREFOUR": "Carefour",
     },
   },
   {
@@ -181,7 +196,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "RPRODUKT.*MAGAZIN",
       "MAGAZIN.*MARKET",
       "MINI.*MARKET",
-      "EVEREST.*ROMNY",
+      "EVEREST.*ROMNY"
     ],
   },
   // Краса
@@ -213,7 +228,16 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "OLKO",
       "OGGI",
       "STRADIVARIUS",
+      "SINSAY",
     ],
+  },
+  // Охорона
+  {
+    details: {
+      category: "Будинок / Охорона",
+      description: "камери відеоспостереження",
+    },
+    keywords: ["Huachenghk"],
   },
   // Побут
   {
@@ -258,9 +282,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       category: "Подорожі / Речі для подорожей",
       description: `Покупки в "${keyword}"`,
     }),
-    keywords: [
-      "Decathlon",
-    ],
+    keywords: ["Decathlon"],
   },
   // Послуги
   {
