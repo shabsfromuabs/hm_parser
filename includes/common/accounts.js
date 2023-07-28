@@ -3,6 +3,8 @@ const ACCOUNTS = [
   { id: 5864642, currency: "eur", name: "Wise EUR" },
   { id: 6200686, currency: "pln", name: "Wise PLN" },
 
+  { id: 7044486, currency: "pln", name: "PKO PLN" },
+
   { id: 6605436, currency: "pln", name: "Millennium PLN" },
   { id: 6605435, currency: "usd", name: "Millennium USD" },
 

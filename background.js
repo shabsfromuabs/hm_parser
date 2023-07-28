@@ -18,6 +18,9 @@ chrome.runtime.onInstalled.addListener(function () {
           pageUrl: { hostPrefix: 'www.bankmillennium.pl' },
         }),
         new chrome.declarativeContent.PageStateMatcher({
+          pageUrl: { hostPrefix: 'www.ipko.pl' },
+        }),
+        new chrome.declarativeContent.PageStateMatcher({
           pageUrl: { hostPrefix: 'app.hmbee.ru' },
         }),
         new chrome.declarativeContent.PageStateMatcher({

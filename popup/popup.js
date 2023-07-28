@@ -103,6 +103,12 @@ class Popup {
         "includes/parser/parse.js",
       ];
       chrome.scripting.executeScript({ target, files });
+    } else if (currentTab.url?.startsWith("https://www.ipko.pl/")) {
+      const files = [
+        "includes/parser/pkoParser.js",
+        "includes/parser/parse.js",
+      ];
+      chrome.scripting.executeScript({ target, files });
     } else if (currentTab.url?.startsWith("https://app.hmbee.ru/app")) {
       const files = [
         "includes/hm/autocompleter.js",

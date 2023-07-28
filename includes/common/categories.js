@@ -26,7 +26,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     keywords: {
       EKSPOTSENTR: "ВДНГ",
       "Interparking Polska": "Польща",
-      "EUROPARK": "Польща",
+      EUROPARK: "Польща",
     },
   },
   // Будинок
@@ -123,6 +123,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "Bk Gdynia Rivier": "Burger King",
       "Berlin Doner": "Berlin Doner Kebap",
       "SUSHI WORLD GDYNIA": "SUSHI WORLD GDYNIA",
+      "Gdansk Osowa": "Gdansk Osowa",
     },
   },
   {
@@ -132,7 +133,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     }),
     keywords: {
       Glovo: "Glovo",
-    }
+    },
   },
   {
     details: (descriptor) => ({
@@ -184,7 +185,9 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "Express Afro-Indian": "Carefour",
       "Sklep Arkadiusz": "Leviatan",
       "PRZYSTANEK ZDROWIE": "Przystanek Zdrowie",
-      "CARREFOUR": "Carefour",
+      CARREFOUR: "Carefour",
+      "PIEKARNIA TRADYCYJNA": "Piekarnia Tradycijna",
+      "WESOLA PANI": "Wesola Pani",
     },
   },
   {
@@ -196,7 +199,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "RPRODUKT.*MAGAZIN",
       "MAGAZIN.*MARKET",
       "MINI.*MARKET",
-      "EVEREST.*ROMNY"
+      "EVEREST.*ROMNY",
     ],
   },
   // Краса

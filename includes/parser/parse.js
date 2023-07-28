@@ -5,7 +5,7 @@ const parse = async (account, rows) => {
     const row = rows[i];
 
     try {
-      const transaction = await getTransactionFromRow(account, row);
+      const transaction = await getTransactionFromRow(account, row, rows);
       transactions.push(transaction);
       markRowWithColor(row, "rgba(0, 128, 0, 0.2)");
     } catch (e) {
@@ -62,10 +62,10 @@ const getSpecialTransactionDetails = ({
   return null;
 };
 
-const getTransactionFromRow = async (account, row) => {
+const getTransactionFromRow = async (account, row, rows) => {
   // Convert date to integer for further saving in chrome extension store
   const [date, amount, description, spenderName, currencyAmount, currencyName] =
-    await getBasicTransactionDetails(row);
+    await getBasicTransactionDetails(row, rows);
 
   const currencyAmountStr =
     currencyAmount && `(${currencyAmount} ${currencyName})`;
