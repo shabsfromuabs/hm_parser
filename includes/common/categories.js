@@ -27,6 +27,8 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       EKSPOTSENTR: "ВДНГ",
       "Interparking Polska": "Польща",
       EUROPARK: "Польща",
+      "PANGO.*WARSZAWA": "Pango.pl",
+      "PARKOMETR": "Parkometr",
     },
   },
   // Будинок
@@ -124,6 +126,8 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "Berlin Doner": "Berlin Doner Kebap",
       "SUSHI WORLD GDYNIA": "SUSHI WORLD GDYNIA",
       "Gdansk Osowa": "Gdansk Osowa",
+      "Lodziarnia.*MAMMA.*MIA": "Lodziarnia MAMMA MIA",
+      "TEJST WINGERT I WSPOLN": "Surf Burger",
     },
   },
   {
@@ -137,7 +141,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   },
   {
     details: (descriptor) => ({
-      category: "Їжа / Кафе",
+      category: "Їжа / Обід на роботі",
       description: `Обід на роботі в "${descriptor}"`,
     }),
     keywords: {
@@ -188,6 +192,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       CARREFOUR: "Carefour",
       "PIEKARNIA TRADYCYJNA": "Piekarnia Tradycijna",
       "WESOLA PANI": "Wesola Pani",
+      "eLeclerc": "eLeclerc",
     },
   },
   {
@@ -361,6 +366,15 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "PESTO CAFE": "Pesto Cafe",
       GENATSVALE: "Геніцвалі і Хінкалі",
       "Restoran Mill": "Mill Hub",
+    },
+  },
+  {
+    details: (descriptor) => ({
+      category: "Розваги / Кафе ресторани клуби",
+      description: descriptor,
+    }),
+    keywords: {
+      "Spokoj": "Spokoj Кафе",
     },
   },
   {

@@ -132,7 +132,8 @@ const getAmountInAccountCurrency = (isExpence) => {
   // NOTE: Ussually this will be WITHOUT "minus" sign in UI for expenses
   const node =
     document.querySelector(".modal-window .formRow.postAmount .sum") ||
-    document.querySelector(".modal-window .formRow.blockAmount .sum");
+    document.querySelector(".modal-window .formRow.blockAmount .sum") ||
+    document.querySelector(".modal-window .formRow.operationAmount .sum");
 
   const baseCurrencyAmountStr = node.innerText
     .replace(/\s/g, "")
