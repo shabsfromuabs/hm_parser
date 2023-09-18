@@ -19,6 +19,12 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     keywords: ["AZS"],
   },
   {
+    details: { category: "Авто / Догляд" },
+    keywords: {
+      "BP-WIKING JET WASH": "Мийка BP",
+    }
+  },
+  {
     details: (descriptor) => ({
       category: "Авто / Парковка",
       description: `Парковка ${descriptor}`,
@@ -29,6 +35,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       EUROPARK: "Польща",
       "PANGO.*WARSZAWA": "Pango.pl",
       "PARKOMETR": "Parkometr",
+      "apcoa p and c": "Парковка Swissmed",
     },
   },
   // Будинок
@@ -152,6 +159,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "Cafe.*Dinners": "Cafe Dinners",
       "KIYEV.+Yizha": "Бургери Yizha",
       "izha.+KIYEV": "Бургери Yizha",
+      "dagrasso": "Піца dagrasso.pl",
     },
   },
   {

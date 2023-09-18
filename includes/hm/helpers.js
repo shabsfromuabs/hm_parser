@@ -108,11 +108,12 @@ const createTransaction = ({
   return fetch("/api/transaction", {
     method: "POST",
     headers: {
-      Accept: "application/json",
+      Accept: "application/json, text/javascript, */*; q=0.01",
       "Content-Type": "application/json",
-      hm_source: "HM3",
-      user_email: "shabsfromuabs@gmail.com",
-      user_token: token,
+      'Hm-Source': "HM3",
+      'User-Email': "shabsfromuabs@gmail.com",
+      'User-Token': token,
+      'X-Requested-With': 'XMLHttpRequest',
     },
     body: JSON.stringify({ transaction }),
   });
