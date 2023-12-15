@@ -23,86 +23,81 @@ const TRANSFER_MATCHERS = [
 
 const SPECIAL_MATCHERS = [];
 
-const getBasicTransactionDetails = async (row) => {
-  const date = getDate(row).getTime();
+const getBasicTransactionDetails = async (row, rows) => {
+  const account = getAccount(row);
+  const date = getDate(row, rows).getTime();
   const amount = getAmount(row);
   const description = getDescription(row);
 
-  return [date, amount, description];
+  return [account, date, amount, description];
 };
 
-const getDate = (row) => {
-  const dateContainer =
-    row?.querySelector(".SettlementDate") || row.querySelectorAll("td")[1];
+const getAccount = (row) => {
+  const accountCurrenty = row
+    .querySelectorAll("div:not([role='img'])")[3]
+    .querySelectorAll("span")[3]
+    .innerText.match(/(PLN|USD)/)[0];
 
-  const dateStr = dateContainer.innerText.split(" / ")[0];
-  const date = parseInt(dateStr.split("-")[0]);
-  const month = parseInt(dateStr.split("-")[1]);
-  const year = parseInt(dateStr.split("-")[2]);
+  if (accountCurrenty) return getAccountByName(`Millennium ${accountCurrenty}`);
+  return getAccountByName(`Millennium PLN`);
+};
+
+const getDate = (row, rows) => {
+  let prevSibling = row.parentElement.previousSibling;
+  let dateContainer;
+
+  for (let i = 0; i < rows.length; i++) {
+    if (prevSibling.querySelector("[aria-label='Calendar icon']")) {
+      dateContainer = prevSibling;
+      break;
+    }
+    prevSibling = prevSibling.previousSibling;
+  }
+
+  const dateStr = dateContainer.innerText;
+  if (dateStr === 'Today') return new Date();
+
+  const date = parseInt(dateStr.split(".")[0]);
+  const month = parseInt(dateStr.split(".")[1]);
+  const year = parseInt(dateStr.split(".")[2]);
 
   return new Date(year, month - 1, date);
 };
 
 const getAmount = (row) => {
-  const amountStr = row.querySelector(
-    ".Amount.MNText.StandardListAmount"
-  )?.innerText;
-
-  const absAmountStr = row.querySelectorAll("td")[3]?.innerText;
-
-  const cleanAmount = (amountStr || `-${absAmountStr}`)
-    .replace(/\s|PLN|USD/g, "")
-    .replace(",", "");
-
-  // NOTE: Expense should be negative numbers in HM, so keep 'minus' sign
-  return parseFloat(cleanAmount);
+  const amountStr = row
+    .querySelectorAll("div:not([role='img'])")[4]
+    .innerText.replace(/\s/g, "")
+    .replace(",", ".");
+  // NOTE: Expense should be negative numbers in HM, so keep "minus" sign
+  return parseFloat(amountStr);
 };
 
 const getDescription = (row) => {
-  const container =
-    row.querySelector(".DescriptionRow") || row.querySelectorAll("td")[2];
-
-  return container.innerText
-    .replace(/Description: /, "")
-    .replace("Hold for purchase - ", "")
-    .replace("card present ", "")
-    .replace("4988XXXXXXXX9916 ", "");
+  const descParts = row
+    .querySelectorAll("div:not([role='img'])")[2]
+    .querySelectorAll("span");
+  const name = descParts[0].innerText;
+  // const paymentType = descParts[1].innerText;
+  const details = descParts[2].innerText;
+  if (name == details) return name;
+  return `${name} ${details}`;
 };
 
 const getBankProposedCategory = () => {};
 
 const markRowWithColor = (row, color) => (row.style.backgroundColor = color);
 
-const getParsingData = () => {
-  const titlePanle = document.querySelector(".TitlePanel");
-  const accSelect = document.querySelector("#SelectedAccount_select");
-  const rows = [...document.querySelectorAll(".ActionRow")];
-
-  if (titlePanle?.innerText == "Blocked funds") {
-    return ["PLN", rows];
-  } else if (accSelect?.selectedOptions[0].text) {
-    const accountName = accSelect.selectedOptions[0].text;
-    // First element is not a transaction
-    rows.shift();
-    return [accountName.match(/USD|PLN/)[0], rows];
-  }
-
-  return [];
-};
-
 class MillenniumParser {
   constructor() {
     chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
-        const [currency, rows] = getParsingData();
-        if (!currency) {
-          alert("Can't detect currency");
-          return;
-        }
+        const rows = [
+          ...document.querySelectorAll("[data-testid='transactionTile']"),
+        ];
 
-        const account = getAccountByName(`Millennium ${currency}`);
-        const parsedTransactions = await parse(account, rows);
-        chrome.storage.local.set({ parsedTransactions, account });
+        const parsedTransactions = await parse(rows);
+        chrome.storage.local.set({ parsedTransactions, account: "millenium" });
       }
     });
   }
