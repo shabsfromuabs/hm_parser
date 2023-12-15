@@ -127,11 +127,17 @@ const SPECIAL_MATCHERS = [
 ];
 
 const getBasicTransactionDetails = async (row) => {
+  const account = getAccount();
   const date = getDate(row).getTime();
   const amount = getAmount(row);
   const description = getDescription(row);
 
-  return [date, amount, description];
+  return [account, date, amount, description];
+};
+
+const getAccount = () => {
+  const cardName = document.querySelector(".card-primary").innerText;
+  return detectCurrentAccount(cardName);
 };
 
 const getDate = (row) => {
@@ -168,18 +174,14 @@ const markRowWithColor = (row, color) => {
 
 class AlfaParser {
   constructor() {
-    const cardName = document.querySelector(".card-primary").innerText;
-    const account = detectCurrentAccount(cardName);
-    if (!account) alert("Can't detect account");
-
     chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
         const rows = document.querySelectorAll(
           "table.x-acct-operations tbody tr"
         );
         
-        const parsedTransactions = await parse(account, rows);
-        chrome.storage.local.set({ parsedTransactions, account });
+        const parsedTransactions = await parse(rows);
+        chrome.storage.local.set({ parsedTransactions, account: "alfa" });
       }
     });
   }

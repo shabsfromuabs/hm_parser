@@ -64,11 +64,18 @@ const TRANSFER_MATCHERS = [
 const SPECIAL_MATCHERS = [];
 
 const getBasicTransactionDetails = async (row) => {
+  const account = getAccount();
   const date = getDate(row).getTime();
   const amount = getAmount(row);
   const description = getDescription(row);
 
-  return [date, amount, description];
+  return [account, date, amount, description];
+};
+
+const getAccount = () => {
+  const wiseAccountId = window.location.pathname.replace("/balances/", "");
+  const currency = WISE_ACCOUNTS[wiseAccountId];
+  return getAccountByName(`Wise ${currency}`);
 };
 
 const getDate = (row) => {
@@ -120,18 +127,14 @@ const markRowWithColor = (row, color) => (row.style.backgroundColor = color);
 
 class WiseParser {
   constructor() {
-    const wiseAccountId = window.location.pathname.replace("/balances/", "");
-    const currency = WISE_ACCOUNTS[wiseAccountId];
-    const account = getAccountByName(`Wise ${currency}`);
-
     chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
         const rows = document.querySelectorAll(
           '#main a[data-testid="activity-summary"]'
         );
         
-        const parsedTransactions = await parse(account, rows);
-        chrome.storage.local.set({ parsedTransactions, account });
+        const parsedTransactions = await parse(rows);
+        chrome.storage.local.set({ parsedTransactions, account: "wise" });
       }
     });
   }

@@ -24,11 +24,12 @@ const TRANSFER_MATCHERS = [
 const SPECIAL_MATCHERS = [];
 
 const getBasicTransactionDetails = async (row, rows) => {
+  const account = getAccountByName("PKO PLN");
   const date = getDate(row, rows).getTime();
   const amount = getAmount(row);
   const description = getDescription(row);
 
-  return [date, amount, description];
+  return [account, date, amount, description];
 };
 
 const getDate = (row, rows) => {
@@ -57,7 +58,7 @@ const getDate = (row, rows) => {
 
 const getAmount = (row) => {
   // Expences will have minus sign at beginning like "-10,00 PLN"
-  const amountStr = row.querySelectorAll("td")[3].innerText;
+  const amountStr = row.querySelectorAll("td")[4].innerText;
   const cleanAmount = amountStr.replace(/\s|PLN|USD/g, "").replace(",", ".");
 
   // NOTE: Expense should be negative numbers in HM, so keep 'minus' sign
@@ -80,8 +81,6 @@ const markRowWithColor = (row, color) => (row.style.backgroundColor = color);
 
 class PkoParser {
   constructor() {
-    const account = getAccountByName("PKO PLN");
-
     chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
         const allRows = document.querySelectorAll("form table tbody tr");
@@ -91,8 +90,8 @@ class PkoParser {
           if (allRows[i].children.length > 1) rows.push(allRows[i]);
         }
 
-        const parsedTransactions = await parse(account, rows);
-        chrome.storage.local.set({ parsedTransactions, account });
+        const parsedTransactions = await parse(rows);
+        chrome.storage.local.set({ parsedTransactions, account: "pko" });
       }
     });
   }

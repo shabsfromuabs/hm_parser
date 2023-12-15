@@ -73,6 +73,7 @@ const TRANSFER_MATCHERS = [
 const SPECIAL_MATCHERS = [];
 
 const getBasicTransactionDetails = async (row) => {
+  const account = getAccountByName("Карта Укрсиб [Elite]");
   const currency = row.querySelector(".cell.amount .currency").innerText;
 
   // Open modal with details if currency conversion has been applied
@@ -92,6 +93,7 @@ const getBasicTransactionDetails = async (row) => {
         document.querySelector(".modal-window-close").click();
 
         return resolve([
+          account,
           date,
           amountInAccountCurrency,
           description,
@@ -108,7 +110,7 @@ const getBasicTransactionDetails = async (row) => {
   const description = getDescription(row);
   const spenderName = getSpenderName(row);
 
-  return [date, amount, description, spenderName];
+  return [account, date, amount, description, spenderName];
 };
 
 const getDate = (row) => {
@@ -173,14 +175,12 @@ const markRowWithColor = (row, color) => (row.style.backgroundColor = color);
 
 class UkrsibParser {
   constructor() {
-    const account = getAccountByName("Карта Укрсиб [Elite]");
-
     chrome.runtime.onMessage.addListener(async (request) => {
       if (request.command === "parse") {
         const rows = document.querySelectorAll(".data .transactionItemPanel");
 
-        const parsedTransactions = await parse(account, rows);
-        chrome.storage.local.set({ parsedTransactions, account });
+        const parsedTransactions = await parse(rows);
+        chrome.storage.local.set({ parsedTransactions, account: "ukrsib" });
       }
     });
   }

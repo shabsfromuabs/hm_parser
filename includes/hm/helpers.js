@@ -86,7 +86,7 @@ const createTransaction = ({
           ...commonFields,
           description: [Math.abs(amount), description].join(" "),
           account_id: accountId,
-          currency: getAccount(accountId).currency,
+          currency: getAccountById(accountId).currency,
           real_amount: amount,
         }
       : {
@@ -96,11 +96,11 @@ const createTransaction = ({
           transfer_from_id: fromAccountId,
           account_id: fromAccountId,
           real_amount: fromAmount,
-          currency: getAccount(fromAccountId).currency,
+          currency: getAccountById(fromAccountId).currency,
           // To
           transfer_to_id: toAccountId,
           transfer_to_amount: toAmount,
-          transfer_to_currency: getAccount(toAccountId).currency,
+          transfer_to_currency: getAccountById(toAccountId).currency,
         };
 
   console.log(transaction);

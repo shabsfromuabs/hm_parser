@@ -45,6 +45,6 @@ const ACCOUNTS = [
 
 const getAccounts = () => ACCOUNTS;
 
-const getAccount = (id) => ACCOUNTS.find((acc) => acc.id === id);
+const getAccountById = (id) => ACCOUNTS.find((acc) => acc.id === id);
 
 const getAccountByName = (name) => ACCOUNTS.find((acc) => acc.name === name);
