@@ -135,6 +135,8 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "Gdansk Osowa": "Gdansk Osowa",
       "Lodziarnia.*MAMMA.*MIA": "Lodziarnia MAMMA MIA",
       "TEJST WINGERT I WSPOLN": "Surf Burger",
+      "DESI KEBAB": "Шаурма на Поморській DESI KEBAB",
+      "BAIKA": "кавярні BAIKA",
     },
   },
   {
@@ -201,6 +203,10 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "PIEKARNIA TRADYCYJNA": "Piekarnia Tradycijna",
       "WESOLA PANI": "Wesola Pani",
       "eLeclerc": "eLeclerc",
+      "PIEKARNIA MIELNIK": "Piekarnia Mielnik",
+      "SKLEP GROSZ": "Sklep Grosz",
+      "LEWIATAN": "LEWIATAN",
+      "STOKROTKA": "STOKROTKA",
     },
   },
   {
@@ -269,6 +275,9 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       DOMOSVIT: "Домосвіт",
       JYSK: "JYSK",
       IKEA: "IKEA",
+      CASTORAMA: "CASTORAMA",
+      OBI: "OBI",
+      "LEROY MERLIN": "LEROY MERLIN",
     },
   },
   {

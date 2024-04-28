@@ -8,6 +8,9 @@ const ACCOUNTS = [
   { id: 6605436, currency: "pln", name: "Millennium PLN" },
   { id: 6605435, currency: "usd", name: "Millennium USD" },
 
+  { id: 7735655, currency: "pln", name: "Millenium 360 PLN [Personal]" },
+  { id: 7753511, currency: "usd", name: "Millenium 360 USD [Personal]" },
+
   { id: 520859, currency: "uah", name: "Карта Укрсиб [Elite]" },
   { id: 725557, currency: "usd", name: "Карта Укрсиб [Elite] USD" },
 
