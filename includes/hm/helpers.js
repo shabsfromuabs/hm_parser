@@ -12,22 +12,28 @@ const handleApiResponse = (response) => {
   }
 };
 
-const getToken = (email, password) =>
-  fetch("/api/user_session", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      password,
-      remember_me: true,
-      from: "hm3",
-    }),
-  })
-    .then(handleApiResponse)
-    .then((data) => data.user.authentication_token);
+const getToken = (email, password) => {
+  return Promise.resolve(
+    'my token'
+  );
+}
+
+// const getToken = (email, password) =>
+//   fetch("/api/user_session", {
+//     method: "POST",
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       email,
+//       password,
+//       remember_me: true,
+//       from: "hm3",
+//     }),
+//   })
+//     .then(handleApiResponse)
+//     .then((data) => data.user.authentication_token);
 
 const getCategories = (email, token) => {
   const uniqAndPresent = (value, index, self) =>
