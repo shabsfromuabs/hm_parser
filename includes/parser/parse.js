@@ -1,11 +1,11 @@
-const parse = async (rows) => {
+const parse = async (rows, options) => {
   const transactions = [];
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
 
     try {
-      const transaction = await getTransactionFromRow(row, rows);
+      const transaction = await getTransactionFromRow(row, rows, options);
       transactions.push(transaction);
       markRowWithColor(row, "rgba(0, 128, 0, 0.2)");
     } catch (e) {
@@ -62,10 +62,10 @@ const getSpecialTransactionDetails = ({
   return null;
 };
 
-const getTransactionFromRow = async (row, rows) => {
+const getTransactionFromRow = async (row, rows, options) => {
   // Convert date to integer for further saving in chrome extension store
   const [account, date, amount, description, spenderName, currencyAmount, currencyName] =
-    await getBasicTransactionDetails(row, rows);
+    await getBasicTransactionDetails(row, rows, options);
 
   const currencyAmountStr =
     currencyAmount && `(${currencyAmount} ${currencyName})`;

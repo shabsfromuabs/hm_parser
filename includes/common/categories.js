@@ -12,7 +12,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       category: "Авто / Заправка",
       description: `Заправка на "${descriptor}"`,
     }),
-    keywords: { okko: "Окко", WOG: "Wog", shell: "Shell" },
+    keywords: { okko: "Окко", WOG: "Wog", shell: "Shell", orlen: "ORLEN" },
   },
   {
     details: { category: "Авто / Заправка" },
@@ -22,7 +22,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     details: { category: "Авто / Догляд" },
     keywords: {
       "BP-WIKING JET WASH": "Мийка BP",
-    }
+    },
   },
   {
     details: (descriptor) => ({
@@ -31,11 +31,16 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     }),
     keywords: {
       EKSPOTSENTR: "ВДНГ",
-      "Interparking Polska": "Польща",
-      EUROPARK: "Польща",
+      "Interparking Polska": "Interparking",
+      EUROPARK: "EUROPARK",
       "PANGO.*WARSZAWA": "Pango.pl",
-      "PARKOMETR": "Parkometr",
-      "apcoa p and c": "Парковка Swissmed",
+      PARKOMETR: "Parkometr",
+      "apcoa p and c": "apcoa",
+      "apcoa.pl": "apcoa",
+      "MPSA MPSA": "MPSA",
+      "SSPP GDYNIA": "GDYNIA",
+      "CAR PARK": "CAR PARK",
+      "PARKING NORWIDA": "NORWIDA",
     },
   },
   // Будинок
@@ -97,7 +102,12 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       category: "Зв'язок / Мобільний",
       description: "Поповнення мобільного",
     },
-    keywords: ["EasyPayVodafon", "t-Mobile"],
+    keywords: [
+      "EasyPayVodafon",
+      "t-Mobile",
+      "PRTMN KYIVST",
+      "Поповнення мобільного",
+    ],
   },
   // Здоров'я
   {
@@ -112,7 +122,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   },
   {
     details: { category: "Здоров'я / Ліки", description: "Аптека" },
-    keywords: ["Apteka"],
+    keywords: ["Apteka", "SUPERPHARM"],
   },
   // Їжа
   {
@@ -123,6 +133,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
     keywords: {
       McDonald: "McDonald's",
       KFC: "KFC",
+      "Gdansk 3 - Osowa": "Max Premium Burgers (Osowa)",
       "Ranch.*Steak.*House": "Ranch Steak House",
       "Lviv.*Kruasan": "Львівські Круасани",
       "FS.*Gatne": "FS Суші в Мегамаркеті",
@@ -136,7 +147,10 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "Lodziarnia.*MAMMA.*MIA": "Lodziarnia MAMMA MIA",
       "TEJST WINGERT I WSPOLN": "Surf Burger",
       "DESI KEBAB": "Шаурма на Поморській DESI KEBAB",
-      "BAIKA": "кавярні BAIKA",
+      BAIKA: "кавярні BAIKA",
+      "PL SBX": "Старбакс",
+      Zabka: "Zabka",
+      Zappka: "Zabka",
     },
   },
   {
@@ -161,7 +175,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "Cafe.*Dinners": "Cafe Dinners",
       "KIYEV.+Yizha": "Бургери Yizha",
       "izha.+KIYEV": "Бургери Yizha",
-      "dagrasso": "Піца dagrasso.pl",
+      dagrasso: "Піца dagrasso.pl",
     },
   },
   {
@@ -181,7 +195,6 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       AUCHAN: "Ашані",
       "SHOP.*ATB": "АТБ",
       SUPERMARKETEKO: "Еко маркет",
-      METRO: "Metro",
       SAMMARKET: "Сам маркет",
       MAGAZINKOLO: "Kolo",
       MEGAMARKET: "Мегамаркеті",
@@ -192,8 +205,6 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "PINGO DOCE": "Pingo Doce",
       LIDL: "Lidl",
       CONTINENTE: "Continente",
-      Zabka: "Zabka",
-      Zappka: "Zabka",
       Biedronka: "Biedronka",
       "JMP s.a. biedr": "Biedronka",
       "Express Afro-Indian": "Carefour",
@@ -202,11 +213,14 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       CARREFOUR: "Carefour",
       "PIEKARNIA TRADYCYJNA": "Piekarnia Tradycijna",
       "WESOLA PANI": "Wesola Pani",
-      "eLeclerc": "eLeclerc",
+      eLeclerc: "eLeclerc",
       "PIEKARNIA MIELNIK": "Piekarnia Mielnik",
       "SKLEP GROSZ": "Sklep Grosz",
-      "LEWIATAN": "LEWIATAN",
-      "STOKROTKA": "STOKROTKA",
+      LEWIATAN: "LEWIATAN",
+      STOKROTKA: "STOKROTKA",
+      UKRAINOCZKA: "UKRAINOCZKA",
+      "MERKUS SKLEP":  "MERKUS (Galeria Metropolia)",
+      "NETTO": "Netto",
     },
   },
   {
@@ -224,7 +238,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   // Краса
   {
     details: { category: "Краса / Послуги", description: "Стрижка" },
-    keywords: ["SALONKRASY"],
+    keywords: ["SALONKRASY", "BARBERWAVE"],
   },
   // Одяг
   {
@@ -251,6 +265,7 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       "OGGI",
       "STRADIVARIUS",
       "SINSAY",
+      "C&A",
     ],
   },
   // Охорона
@@ -260,6 +275,13 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       description: "камери відеоспостереження",
     },
     keywords: ["Huachenghk"],
+  },
+  {
+    details: {
+      category: "Будинок / Охорона",
+      description: "Поповнення Ajax Lifecell",
+    },
+    keywords: ["Поповнення Ajax Lifecell"],
   },
   // Побут
   {
@@ -276,7 +298,6 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       JYSK: "JYSK",
       IKEA: "IKEA",
       CASTORAMA: "CASTORAMA",
-      OBI: "OBI",
       "LEROY MERLIN": "LEROY MERLIN",
     },
   },
@@ -344,6 +365,13 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
   {
     details: {
       category: "Проїзд / Громадський траспорт",
+      description: "jakdojade",
+    },
+    keywords: ["jakdojade"],
+  },
+  {
+    details: {
+      category: "Проїзд / Громадський траспорт",
       description: "Транспортна карта Лісабон",
     },
     keywords: ["SOFLUSA.*SA"],
@@ -391,7 +419,9 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       description: descriptor,
     }),
     keywords: {
-      "Spokoj": "Spokoj Кафе",
+      Spokoj: "Spokoj Кафе",
+      "FOOD WAY GROUP": "Sushi Express",
+      "AW Network 17694": "Піцерія біля садочку",
     },
   },
   {
@@ -420,6 +450,15 @@ const CATEGORIES_DESCRIPTION_MATCHES = [
       description: "Підписка Google Music",
     },
     keywords: ["Google Music"],
+  },
+  {
+    details: {
+      category: "Цифрові продукти / Музика",
+      description: "Youtube Premium манжулі",
+    },
+    keywords: [
+      "Перерахування коштів на користь третьої особи за постійним дорученням",
+    ],
   },
 ];
 

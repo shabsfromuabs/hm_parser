@@ -23,8 +23,8 @@ const TRANSFER_MATCHERS = [
 
 const SPECIAL_MATCHERS = [];
 
-const getBasicTransactionDetails = async (row, rows) => {
-  const account = getAccount(row);
+const getBasicTransactionDetails = async (row, rows, options) => {
+  const account = getAccount(row, options.accountGroup);
   const date = getDate(row, rows).getTime();
   const amount = getAmount(row);
   const description = getDescription(row);
@@ -32,14 +32,19 @@ const getBasicTransactionDetails = async (row, rows) => {
   return [account, date, amount, description];
 };
 
-const getAccount = (row) => {
-  const accountCurrenty = row
-    .querySelectorAll("div:not([role='img'])")[3]
-    .querySelectorAll("span")[3]
-    .innerText.match(/(PLN|USD)/)[0];
+const getAccount = (row, accountGroup) => {
+  const accountCurrency =
+    row
+      .querySelectorAll("div:not([role='img'])")[4]
+      .querySelectorAll("span")[2]
+      .innerText.match(/(PLN|USD)/)[0] || "PLN";
 
-  if (accountCurrenty) return getAccountByName(`Millennium ${accountCurrenty}`);
-  return getAccountByName(`Millennium PLN`);
+  const accountName =
+    accountGroup === "personal"
+      ? `Millenium 360 ${accountCurrency} [Personal]`
+      : `Millennium ${accountCurrency}`;
+
+  return getAccountByName(accountName);
 };
 
 const getDate = (row, rows) => {
@@ -55,7 +60,7 @@ const getDate = (row, rows) => {
   }
 
   const dateStr = dateContainer.innerText;
-  if (dateStr === 'Today') return new Date();
+  if (dateStr === "Today") return new Date();
 
   const date = parseInt(dateStr.split(".")[0]);
   const month = parseInt(dateStr.split(".")[1]);
@@ -96,7 +101,19 @@ class MillenniumParser {
           ...document.querySelectorAll("[data-testid='transactionTile']"),
         ];
 
-        const parsedTransactions = await parse(rows);
+        const isPersonal = document
+          .querySelector(".MuiPaper-root")
+          ?.innerText?.match(/Millennium 360/);
+
+        const accountGroup = isPersonal ? "personal" : "business";
+        const filtersForm = document.querySelector("main").childNodes[0];
+
+        appendHtmlElement("div", filtersForm, "", {
+          innerText: `Detected ${accountGroup} acount`,
+          style: "background: yellow",
+        });
+
+        const parsedTransactions = await parse(rows, { accountGroup });
         chrome.storage.local.set({ parsedTransactions, account: "millenium" });
       }
     });
